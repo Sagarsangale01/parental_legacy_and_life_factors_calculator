@@ -1,0 +1,213 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* =============================================================
+   DESIGN TOKENS  — both dark (default) and light overrides
+   ============================================================= */
+@layer base {
+  :root {
+    /* Backgrounds */
+    --bg-app:         #060b18;
+    --bg-surface:     #0c1425;
+    --bg-card:        rgba(12, 20, 37, 0.82);
+    --bg-card-solid:  #101c30;
+    --bg-input:       rgba(16, 28, 48, 0.9);
+    --bg-hover:       rgba(192, 38, 211, 0.06);
+    --bg-row-alt:     rgba(12, 20, 37, 0.45);
+    --bg-header:      rgba(6, 11, 24, 0.85);
+    --bg-footer:      rgba(6, 11, 24, 0.9);
+    --bg-tfoot:       rgba(6, 11, 24, 0.92);
+    --bg-badge:       rgba(16, 28, 48, 0.6);
+    --bg-note:        rgba(6, 11, 24, 0.6);
+
+    /* Borders */
+    --border:         #1a2d45;
+    --border-strong:  #234260;
+    --border-input:   #1a2d45;
+    --border-focus:   #c026d3;
+
+    /* Text */
+    --text-primary:   #f0f6ff;
+    --text-secondary: #8baec8;
+    --text-muted:     #4a6d8a;
+    --text-value:     #ffffff;
+    --text-heading:   #ffffff;
+    --text-subheading:#c5d8ec;
+
+    /* Mother — Fuchsia */
+    --mother-primary: #c026d3;
+    --mother-mid:     #d946ef;
+    --mother-light:   #e879f9;
+    --mother-bg:      rgba(192, 38, 211, 0.10);
+    --mother-bg-hover:rgba(192, 38, 211, 0.08);
+    --mother-border:  rgba(192, 38, 211, 0.25);
+    --mother-glow:    rgba(192, 38, 211, 0.12);
+
+    /* Father — Cyan */
+    --father-primary: #0891b2;
+    --father-mid:     #06b6d4;
+    --father-light:   #38bdf8;
+    --father-bg:      rgba(8, 145, 178, 0.10);
+    --father-bg-hover:rgba(8, 145, 178, 0.08);
+    --father-border:  rgba(8, 145, 178, 0.25);
+    --father-glow:    rgba(8, 145, 178, 0.12);
+
+    /* Accent — Amber / Gold */
+    --accent-amber:   #fbbf24;
+    --accent-gold:    #d97706;
+    --accent-bg:      rgba(217, 119, 6, 0.10);
+    --accent-border:  rgba(251, 191, 36, 0.25);
+
+    /* Status */
+    --success:        #34d399;
+    --success-bg:     rgba(52, 211, 153, 0.10);
+    --warning:        #fbbf24;
+    --error:          #e879f9;
+    --error-bg:       rgba(192, 38, 211, 0.08);
+    --error-border:   rgba(192, 38, 211, 0.20);
+
+    /* Chart tooltip */
+    --tooltip-bg:     #0c1425;
+    --tooltip-border: #1a2d45;
+    --tooltip-text:   #f0f6ff;
+
+    /* Bar mini bg */
+    --bar-track:      rgba(12, 20, 37, 0.8);
+  }
+
+  /* ---- LIGHT MODE OVERRIDES ---- */
+  .light {
+    --bg-app:         #f0f6ff;
+    --bg-surface:     #ffffff;
+    --bg-card:        rgba(255, 255, 255, 0.95);
+    --bg-card-solid:  #f8fafd;
+    --bg-input:       rgba(255, 255, 255, 0.95);
+    --bg-hover:       rgba(192, 38, 211, 0.04);
+    --bg-row-alt:     rgba(230, 240, 255, 0.5);
+    --bg-header:      rgba(248, 252, 255, 0.92);
+    --bg-footer:      rgba(240, 246, 255, 0.95);
+    --bg-tfoot:       rgba(232, 242, 255, 0.9);
+    --bg-badge:       rgba(240, 246, 255, 0.8);
+    --bg-note:        rgba(240, 246, 255, 0.8);
+
+    --border:         #c9dff0;
+    --border-strong:  #aacce0;
+    --border-input:   #b8d4e8;
+    --border-focus:   #c026d3;
+
+    --text-primary:   #0b1829;
+    --text-secondary: #2d5068;
+    --text-muted:     #4a7090;
+    --text-value:     #0b1829;
+    --text-heading:   #0b1829;
+    --text-subheading:#1e3a52;
+
+    --mother-bg:      rgba(192, 38, 211, 0.07);
+    --mother-bg-hover:rgba(192, 38, 211, 0.05);
+    --mother-border:  rgba(192, 38, 211, 0.30);
+    --mother-glow:    rgba(192, 38, 211, 0.08);
+
+    --father-bg:      rgba(8, 145, 178, 0.07);
+    --father-bg-hover:rgba(8, 145, 178, 0.05);
+    --father-border:  rgba(8, 145, 178, 0.30);
+    --father-glow:    rgba(8, 145, 178, 0.08);
+
+    --accent-bg:      rgba(217, 119, 6, 0.07);
+    --accent-border:  rgba(217, 119, 6, 0.30);
+
+    --success-bg:     rgba(5, 150, 105, 0.08);
+    --error-bg:       rgba(192, 38, 211, 0.06);
+    --error-border:   rgba(192, 38, 211, 0.18);
+
+    --tooltip-bg:     #1e3a52;
+    --tooltip-border: #2d5068;
+    --tooltip-text:   #f0f6ff;
+
+    --bar-track:      rgba(180, 210, 230, 0.5);
+  }
+}
+
+/* =============================================================
+   GLOBAL BODY
+   ============================================================= */
+body {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  background-color: var(--bg-app);
+  color: var(--text-primary);
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.tabular-nums {
+  font-family: 'JetBrains Mono', monospace;
+  font-variant-numeric: tabular-nums;
+}
+
+/* =============================================================
+   GLASS CARD — uses CSS var so light mode works correctly
+   ============================================================= */
+.glass-card {
+  background: var(--bg-card);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+/* =============================================================
+   AMBIENT MESH BACKGROUND
+   ============================================================= */
+.bg-mesh {
+  background-image:
+    radial-gradient(ellipse 70% 45% at 15% 8%,  rgba(192, 38, 211, 0.08) 0%, transparent 65%),
+    radial-gradient(ellipse 55% 40% at 85% 85%,  rgba(8, 145, 178, 0.07) 0%, transparent 65%);
+}
+
+.light .bg-mesh {
+  background-image:
+    radial-gradient(ellipse 70% 45% at 15% 8%,  rgba(192, 38, 211, 0.04) 0%, transparent 65%),
+    radial-gradient(ellipse 55% 40% at 85% 85%,  rgba(8, 145, 178, 0.04) 0%, transparent 65%);
+}
+
+/* =============================================================
+   PROGRESS BAR FILL
+   ============================================================= */
+.bar-fill {
+  transition: width 0.7s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* =============================================================
+   DATE INPUT STYLING (native date picker theming)
+   ============================================================= */
+input[type="date"].themed-input {
+  background: var(--bg-input);
+  color: var(--text-primary);
+  border: 1px solid var(--border-input);
+  border-radius: 12px;
+  padding: 10px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  outline: none;
+  transition: border-color 0.2s;
+  width: 100%;
+}
+input[type="date"].themed-input:focus {
+  border-color: var(--border-focus);
+}
+/* Light mode: ensure date picker text visible */
+.light input[type="date"].themed-input {
+  color-scheme: light;
+}
+.dark input[type="date"].themed-input {
+  color-scheme: dark;
+}
+
+/* =============================================================
+   ANIMATIONS
+   ============================================================= */
+@keyframes pulse-subtle {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.88; transform: scale(1.015); }
+}
+
+.animate-pulse-subtle { animation: pulse-subtle 4s ease-in-out infinite; }
