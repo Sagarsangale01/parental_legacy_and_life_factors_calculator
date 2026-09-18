@@ -16,7 +16,10 @@ const PORT = process.env.PORT || 5000;
 // Security & utility middleware
 app.use(
   helmet({
-    hsts: false, // Disabled HSTS to allow HTTP connections on public IP without SSL forcing
+    hsts: false,
+    contentSecurityPolicy: false, // Prevent Helmet from upgrading JS/CSS asset URLs to https://
+    crossOriginOpenerPolicy: false,
+    originAgentCluster: false
   })
 );
 app.use(
