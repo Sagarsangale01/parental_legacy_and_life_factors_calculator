@@ -41,7 +41,25 @@ app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/calculate', calculateRoutes);
 app.use('/api/v1/history', historyRoutes);
 
-// Fallback 404 handler
+// Serve static client bundle in production if available
+import path from 'path';
+
+const publicPath = path.join(__dirname, '../public');
+
+app.use(express.static(publicPath));
+
+// SPA fallback for non-API GET requests
+app.get('*', (req: Request, res: Response, next) => {
+  if (req.path.startsWith('/api')) {
+    return next();
+  }
+  const indexPath = path.join(publicPath, 'index.html');
+  res.sendFile(indexPath, (err) => {
+    if (err) next();
+  });
+});
+
+// Fallback 404 handler for unmatched routes
 app.use((req: Request, res: Response) => {
   res.status(404).json({
     success: false,
