@@ -77,8 +77,8 @@ app.use(errorHandler);
 async function startServer() {
   try {
     await connectDB();
-    app.listen(PORT, () => {
-      console.log(`🚀 Parental Legacy API server running on http://localhost:${PORT}`);
+    app.listen(Number(PORT), '0.0.0.0', () => {
+      console.log(`🚀 Parental Legacy API server running on port ${PORT}`);
     });
   } catch (error) {
     console.error('Failed to start server:', error);
