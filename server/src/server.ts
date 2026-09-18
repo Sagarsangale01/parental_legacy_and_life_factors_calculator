@@ -14,14 +14,14 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 // Security & utility middleware
-app.use(
-  helmet({
-    hsts: false,
-    contentSecurityPolicy: false, // Prevent Helmet from upgrading JS/CSS asset URLs to https://
-    crossOriginOpenerPolicy: false,
-    originAgentCluster: false
-  })
-);
+// Clean middleware for HTTP & CORS
+app.use((req, res, next) => {
+  res.removeHeader('X-Frame-Options');
+  res.removeHeader('Content-Security-Policy');
+  res.removeHeader('Cross-Origin-Opener-Policy');
+  res.removeHeader('Origin-Agent-Cluster');
+  next();
+});
 app.use(
   cors({
     origin: process.env.CLIENT_URL || true,
