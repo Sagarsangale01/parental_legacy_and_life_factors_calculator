@@ -14,10 +14,14 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 // Security & utility middleware
-app.use(helmet());
+app.use(
+  helmet({
+    hsts: false, // Disabled HSTS to allow HTTP connections on public IP without SSL forcing
+  })
+);
 app.use(
   cors({
-    origin: process.env.CLIENT_URL || 'http://localhost:5173',
+    origin: process.env.CLIENT_URL || true,
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization']
