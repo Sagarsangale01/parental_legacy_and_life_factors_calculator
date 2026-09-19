@@ -283,149 +283,167 @@ export const MAX_BOUNDS_QSS_CONFIG: QssCalibrationConfig = {
 };
 
 // ─────────────────────────────────────────────────────────────────────────────
-//  QSS LABELS & STRUCTURAL METADATA
+//  QSS LABELS & STRUCTURAL METADATA (100% IDENTICAL TO QSS TRUE SCAN-R.xlsx)
 // ─────────────────────────────────────────────────────────────────────────────
 
-/** Maps factor index (0-6) to Chakra name */
+/** Table 2: CHAKRA LEVELS (Exact row names from Excel Sheet1) */
 const CHAKRA_LABELS: string[] = [
-  'Root Chakra (Muladhara)',
-  'Sacral Chakra (Svadhisthana)',
-  'Solar Plexus (Manipura)',
-  'Heart Chakra (Anahata)',
-  'Throat Chakra (Vishuddha)',
-  'Third Eye (Ajna)',
-  'Crown Chakra (Sahasrara)'
+  'Root Chakra Stability',
+  'Sacral Chakra Creativity',
+  'Solar Plexus Power',
+  'Heart Chakra Compassion',
+  'Throat Chakra Expression',
+  'Third Eye Intuition',
+  'Crown Connection'
 ];
 
-/** Maps factor index (0-6) to Aura layer name */
+/** Table 3: AURA LEVELS (Exact row names from Excel Sheet1) */
 const AURA_LABELS: string[] = [
   'Physical Aura',
-  'Etheric Aura',
-  'Emotional Aura',
-  'Mental Aura',
-  'Astral Aura',
-  'Celestial Aura',
-  'Ketheric Template'
+  'Vital Energy Field',
+  'Mental-Emotional Field',
+  'Intuitive Wisdom Field',
+  'Bliss Consciousness Field',
+  'Celestial Resonance Field',
+  'Universal Harmony Field'
 ];
 
-/** 7 Great Elements */
-const ELEMENT_LABELS: string[] = [
-  'Earth (Prithvi)',
-  'Water (Jala)',
-  'Fire (Agni)',
-  'Air (Vayu)',
-  'Ether (Akasha)',
-  'Time (Kala)',
-  'Soul (Atman)'
-];
-
-/** Karmic Tables 4–6 rows */
+/** Karmic Tables 4–6 rows (Exact row names from Excel Sheet1) */
 const KARMIC_ROW_LABELS: { table: number; title: string; rows: string[] }[] = [
-  { table: 4, title: 'Positive Karmic Deeds', rows: ['Compassionate Acts', 'Charitable Service', 'Spiritual Merit', 'Ancestral Blessings', 'Righteous Conduct', 'Wisdom Sharing', 'Divine Devotion'] },
-  { table: 5, title: 'Karmic Refinement Sectors', rows: ['Health Karma', 'Wealth Karma', 'Relationship Karma', 'Career Karma', 'Spiritual Karma', 'Family Karma', 'Destiny Karma'] },
-  { table: 6, title: 'Karmic Balancing', rows: ['Resolution Index', 'Clearance Rate', 'Debt Offset', 'Grace Accumulation', 'Soul Contract Progress', 'Ancestral Healing', 'Cosmic Alignment'] }
+  {
+    table: 4,
+    title: 'POSITIVE KARMIC DEEDS',
+    rows: [
+      'Harmonious Relationships',
+      'Personal Evolution',
+      'Mental Clarity',
+      'Abundance Flow',
+      'Spiritual Alignment',
+      'Environmental Harmony',
+      'Truth Recognition'
+    ]
+  },
+  {
+    table: 5,
+    title: 'KARMIC REFINEMENT SECTORS',
+    rows: [
+      'Anger Management',
+      'Mental Flexibility',
+      'Truthfulness',
+      'Financial Ethics',
+      'Mental Peace',
+      'Physical Care',
+      'Spiritual Connection'
+    ]
+  },
+  {
+    table: 6,
+    title: 'KARMIC BALANCING',
+    rows: [
+      'Removing Curses',
+      'Enhancing Blessings',
+      'Workplace Transformation',
+      'Avoiding Negativity',
+      'Maintaining Virtues',
+      'Positive Affirmations',
+      'Karmic Corrections'
+    ]
+  }
 ];
 
-/** 7 Koshas */
-const KOSHA_LABELS: string[] = [
-  'Annamaya Kosha (Food Sheath)',
-  'Pranamaya Kosha (Energy Sheath)',
-  'Manomaya Kosha (Mental Sheath)',
-  'Vijnanamaya Kosha (Wisdom Sheath)',
-  'Anandamaya Kosha (Bliss Sheath)',
-  'Amritamaya Kosha (Immortality Sheath)',
-  'Shivamaya Kosha (Consciousness Sheath)'
-];
-
-/**
- * Row names for each Kosha Detail table (Tables 22–27), directly from Excel.
- * Index 0 = Table 22 (Annamaya), 1 = Table 23 (Pranamaya), etc.
- */
-const KOSHA_SUBFACTOR_LABELS: string[][] = [
-  // Table 22 — Annamaya Kosha (Food Sheath)
-  ['Nutrition', 'Structure', 'Sensation', 'Health', 'Activity', 'Rest', 'Mortality'],
-  // Table 23 — Pranamaya Kosha (Energy Sheath)
-  ['Prana Flow', 'Breath Quality', 'Vital Force', 'Energy Reserves', 'Chi Balance', 'Nadis Health', 'Aura Vitality'],
-  // Table 24 — Manomaya Kosha (Mental Sheath)
-  ['Thought Patterns', 'Emotional Mind', 'Desire Nature', 'Memory Quality', 'Mind Clarity', 'Mental Peace', 'Reaction Speed'],
-  // Table 25 — Vijnanamaya Kosha (Wisdom Sheath)
-  ['Discrimination Power', 'Wisdom Depth', 'Intuitive Knowing', 'Ethical Clarity', 'Spiritual Insight', 'Higher Learning', 'Truth Perception'],
-  // Table 26 — Anandamaya Kosha (Bliss Sheath)
-  ['Inner Joy', 'Contentment', 'Gratitude Level', 'Peace Depth', 'Love Quality', 'Bliss Access', 'Divine Connection'],
-  // Table 27 — Amritamaya Kosha (Immortality Sheath)
-  ['Timeless Awareness', 'Deathless Nature', 'Soul Continuity', 'Astral Travel', 'Past Life Access', 'Rebirth Wisdom', 'Eternal Presence']
-];
-
-/**
- * Row names for each Element Detail table (Tables 8–13), directly from Excel.
- * Index 0 = Table 8 (Earth), 1 = Table 9 (Water), 2 = Table 10 (Fire),
- *         3 = Table 11 (Air),  4 = Table 12 (Ether), 5 = Table 13 (Time)
- */
+/** Tables 7–13: 7 Great Elements (Exact row names from Excel Sheet1) */
 const ELEMENT_SUBFACTOR_LABELS: string[][] = [
-  // Table 8 — Earth (Prithvi)
-  ['Physical Body', 'Bone Structure', 'Material World', 'Stability Factor', 'Grounding Force', 'Earth Connection', 'Manifestation'],
-  // Table 9 — Water (Jala)
-  ['Emotional Fluidity', 'Adaptability', 'Purification', 'Flow State', 'Receptivity', 'Nourishment', 'Healing Waters'],
-  // Table 10 — Fire (Agni)
-  ['Digestive Fire', 'Transformation', 'Radiance', 'Metabolism', 'Courage', 'Purifying Flame', 'Solar Power'],
-  // Table 11 — Air (Vayu)
-  ['Breath & Life Force', 'Movement Energy', 'Communication', 'Mental Speed', 'Flexibility', 'Nervous System', 'Freedom'],
-  // Table 12 — Ether (Akasha)
-  ['Space Awareness', 'Sound Resonance', 'Vibrational Field', 'Expansion', 'Inner Silence', 'Cosmic Reception', 'Subtle Perception'],
-  // Table 13 — Time (Kala)
-  ['Past Integration', 'Present Awareness', 'Future Vision', 'Timing Mastery', 'Karmic Cycles', 'Rhythmic Flow', 'Temporal Wisdom']
+  // Table 7 — EARTH (Prithvi) ELEMENT
+  ['Stability', 'Structure', 'Nourishment', 'Weight', 'Fertility', 'Patience', 'Manifestation'],
+  // Table 8 — WATER (Jala) ELEMENT
+  ['Fluidity', 'Emotion', 'Cohesion', 'Memory', 'Purification', 'Intuition', 'Surrender'],
+  // Table 9 — FIRE (Agni) ELEMENT
+  ['Digestion', 'Transformation', 'Illumination', 'Vitality', 'Aspiration', 'Willpower', 'Purification'],
+  // Table 10 — AIR (Vayu) ELEMENT
+  ['Movement', 'Breath', 'Communication', 'Connection', 'Freedom', 'Cognition', 'Transmission'],
+  // Table 11 — ETHER (Akasha) ELEMENT
+  ['Space', 'Stillness', 'Receptivity', 'Sound', 'Perception', 'Unity', 'Potential'],
+  // Table 12 — TIME (Kala) ELEMENT
+  ['Sequence', 'Rhythm', 'Change', 'Timing', 'Duration', 'Memory', 'Eternity'],
+  // Table 13 — SOUL (Atman) ELEMENT
+  ['Awareness', 'Witness', 'Identity', 'Freedom', 'Bliss', 'Connection', 'Purpose']
 ];
 
-/** Individual Chakra sub-factor labels (for Tables 14–20) */
+/** Tables 14–20: 7 Detailed Chakras (Exact row names from Excel Sheet1) */
 const CHAKRA_SUBFACTOR_LABELS: string[][] = [
-  ['Physical Security', 'Grounding Energy', 'Survival Instinct', 'Earth Connection', 'Material Stability', 'Ancestral Roots', 'Body Vitality'],
-  ['Creative Force', 'Emotional Flow', 'Sexual Energy', 'Pleasure Balance', 'Passion Drive', 'Relational Joy', 'Sensory Harmony'],
-  ['Personal Power', 'Willpower', 'Confidence Level', 'Ambition Drive', 'Self-Mastery', 'Digestive Fire', 'Action Energy'],
-  ['Unconditional Love', 'Compassion Depth', 'Heart Healing', 'Emotional Balance', 'Forgiveness', 'Empathy Capacity', 'Harmony Field'],
-  ['Communication Clarity', 'Authentic Expression', 'Creative Voice', 'Truth Resonance', 'Listening Ability', 'Sonic Frequency', 'Vibrational Speech'],
-  ['Intuitive Sight', 'Psychic Clarity', 'Mental Vision', 'Wisdom Access', 'Inner Knowing', 'Dream Clarity', 'Higher Perception'],
-  ['Spiritual Connection', 'Divine Grace', 'Universal Unity', 'Enlightenment Index', 'Cosmic Awareness', 'Higher Self Link', 'Transcendence']
+  // Table 14 — ROOT CHAKRA
+  ['Survival', 'Grounding', 'Security', 'Family', 'Abundance', 'Health', 'Presence'],
+  // Table 15 — SACRAL CHAKRA
+  ['Creativity', 'Emotion', 'Sensuality', 'Passion', 'Connection', 'Movement', 'Letting Go'],
+  // Table 16 — SOLAR PLEXUS CHAKRA
+  ['Willpower', 'Purpose', 'Self-Esteem', 'Discipline', 'Digestion', 'Resilience', 'Ambition'],
+  // Table 17 — HEART CHAKRA
+  ['Love', 'Compassion', 'Forgiveness', 'Connection', 'Harmony', 'Healing', 'Altruism'],
+  // Table 18 — THROAT CHAKRA
+  ['Communication', 'Truth', 'Creativity', 'Listening', 'Purpose', 'Presence', 'Influence'],
+  // Table 19 — THIRD EYE CHAKRA
+  ['Intuition', 'Clarity', 'Insight', 'Wisdom', 'Vision', 'Discernment', 'Realization'],
+  // Table 20 — CROWN CHAKRA
+  ['Enlightenment', 'Unity', 'Bliss', 'Service', 'Surrender', 'Completion', 'Eternity']
 ];
 
 /** Specific guideline bounds for detailed Chakras 14–20 */
 const DETAILED_CHAKRA_BOUNDS: { min: number; max: number }[] = [
-  { min: 71.5, max: 74.5 }, // Root
-  { min: 68.5, max: 71.0 }, // Sacral
-  { min: 66.5, max: 68.0 }, // Solar Plexus
-  { min: 64.5, max: 66.0 }, // Heart
-  { min: 60.5, max: 64.0 }, // Throat
-  { min: 38.5, max: 44.5 }, // Third Eye
-  { min: 23.5, max: 28.5 }  // Crown
+  { min: 71.5, max: 74.5 }, // 14: Root
+  { min: 68.5, max: 71.0 }, // 15: Sacral
+  { min: 66.5, max: 68.0 }, // 16: Solar Plexus
+  { min: 64.5, max: 66.0 }, // 17: Heart
+  { min: 60.5, max: 64.0 }, // 18: Throat
+  { min: 38.5, max: 44.5 }, // 19: Third Eye
+  { min: 23.5, max: 28.5 }  // 20: Crown
 ];
 
-/** 4 Pillars of Life */
+/** Tables 21–27: 7 Koshas / Sheaths (Exact row names from Excel Sheet1) */
+const KOSHA_SUBFACTOR_LABELS: string[][] = [
+  // Table 21 — THE FOOD SHEATH (Annamaya)
+  ['Nutrition', 'Structure', 'Sensation', 'Health', 'Activity', 'Rest', 'Mortality'],
+  // Table 22 — THE ENERGY SHEATH (Pranamaya)
+  ['Prana', 'Prana Vayu', 'Apana Vayu', 'Samana Vayu', 'Udana Vayu', 'Vyana Vayu', 'Nadis'],
+  // Table 23 — THE MENTAL SHEATH (Manomaya)
+  ['Perception', 'Emotion', 'Memory', 'Desire', 'Thought', 'Attachment', 'Ego'],
+  // Table 24 — THE WISDOM SHEATH (Vijnanamaya)
+  ['Buddhi', 'Discrimination', 'Understanding', 'Wisdom', 'Intuition', 'Realization', 'Self-Knowledge'],
+  // Table 25 — THE BLISS SHEATH (Anandamaya)
+  ['Peace', 'Joy', 'Contentment', 'Bliss', 'Love', 'Purity', 'Causal'],
+  // Table 26 — THE IMMORTALITY SHEATH (Amritamaya)
+  ['Fearlessness', 'Eternal Awareness', 'Liberation', 'Grace', 'Immortality', 'Vision', 'Transfiguration'],
+  // Table 27 — THE CONSCIOUSNESS SHEATH (Shivamaya)
+  ['Oneness', 'Divinity', 'Purity', 'Bliss', 'Grace', 'Creation', 'Completion']
+];
+
+/** Tables 28–31: 4 Pillars of Life (Exact row names from Excel Sheet1) */
 const PILLAR_LABELS: { title: string; rows: string[] }[] = [
-  { title: 'Ahaar (The Intake)', rows: ['Nutritional Quality', 'Mental Nourishment', 'Emotional Intake', 'Spiritual Food', 'Sensory Input', 'Social Nourishment', 'Creative Fuel'] },
-  { title: 'Vihaar (The Recreation)', rows: ['Physical Play', 'Creative Leisure', 'Social Recreation', 'Nature Connection', 'Artistic Expression', 'Spiritual Retreat', 'Mind Recreation'] },
-  { title: 'Aachar (The Conduct)', rows: ['Ethical Behavior', 'Social Responsibility', 'Disciplined Routine', 'Righteous Action', 'Moral Integrity', 'Environmental Care', 'Dharmic Living'] },
-  { title: 'Vichaar (The Thinking)', rows: ['Positive Mindset', 'Creative Thinking', 'Analytical Clarity', 'Visionary Thought', 'Philosophical Depth', 'Problem Solving', 'Meditative Focus'] }
+  { title: 'THE INTAKE', rows: ['Food', 'Impressions', 'Information', 'Relationships', 'Environment', 'Spiritual Influence', 'Self-Observation'] },
+  { title: 'THE RECREATION', rows: ['Rest', 'Recreation', 'Movement', 'Travel', 'Play', 'Nature', 'Balance'] },
+  { title: 'THE CONDUCT', rows: ['Ethics', 'Responsibility', 'Truthfulness', 'Compassion', 'Service', 'Discipline', 'Example'] },
+  { title: 'THE THINKING', rows: ['Reflection', 'Discrimination', 'Inquiry', 'Meditation', 'Observation', 'Integration', 'Intuition'] }
 ];
 
-/** Psychological Structures (Tables 32–34) */
+/** Tables 32–34: Psychological Structures (Exact row names from Excel Sheet1) */
 const PSYCHOLOGICAL_LABELS: { title: string; rows: string[] }[] = [
-  { title: 'The Complexes (Bhavana)', rows: ['Inferiority Pattern', 'Superiority Pattern', 'Abandonment Pattern', 'Control Pattern', 'Validation Need', 'Perfectionism', 'Shadow Integration'] },
-  { title: 'The Acceptance (Sweekar)', rows: ['Self Acceptance', 'Other Acceptance', 'Life Acceptance', 'Past Acceptance', 'Present Acceptance', 'Future Acceptance', 'Cosmic Acceptance'] },
-  { title: 'The Decision (Nirdhaar)', rows: ['Career Decisiveness', 'Relationship Choices', 'Financial Decisions', 'Spiritual Decisions', 'Health Choices', 'Creative Direction', 'Life Purpose Clarity'] }
+  { title: 'THE COMPLEXES', rows: ['Attachment', 'Aversion', 'Ego', 'Pride', 'Fear', 'Anger', 'Desire'] },
+  { title: 'THE ACCEPTANCE', rows: ['Surrender', 'Acceptance', 'Equanimity', 'Gratitude', 'Forgiveness', 'Love', 'Peace'] },
+  { title: 'THE DECISION', rows: ['Commitment', 'Willpower', 'Determination', 'Courage', 'Integrity', 'Discernment', 'Trust'] }
 ];
 
-/** Ayurvedic Tridosha */
+/** Tables 35–37: Ayurvedic Tridosha (Exact row names from Excel Sheet1) */
 const TRIDOSHA_LABELS: { title: string; rows: string[] }[] = [
-  { title: 'Vata Dosha (Air & Ether)', rows: ['Movement Energy', 'Nervous System', 'Creativity Flow', 'Communication', 'Mental Speed', 'Flexibility', 'Inspiration'] },
-  { title: 'Pitta Dosha (Fire & Water)', rows: ['Metabolic Fire', 'Intellectual Power', 'Leadership Drive', 'Digestion Quality', 'Vision & Focus', 'Transformation', 'Courage Level'] },
-  { title: 'Kapha Dosha (Earth & Water)', rows: ['Physical Endurance', 'Emotional Stability', 'Immune Strength', 'Memory Retention', 'Compassion Level', 'Loyalty', 'Structural Form'] }
+  { title: 'VATA DOSHA', rows: ['Movement', 'Air', 'Communication', 'Rhythm', 'Creativity', 'Anxiety', 'Responsiveness'] },
+  { title: 'PITTA DOSHA', rows: ['Digestion', 'Intellect', 'Determination', 'Temperature', 'Ambition', 'Anger', 'Intelligence'] },
+  { title: 'KAPHA DOSHA', rows: ['Structure', 'Stability', 'Immunity', 'Nourishment', 'Contentment', 'Compassion', 'Tendency'] }
 ];
 
-/** Antahkarana (4 Mind Faculties) */
+/** Tables 38–41: Antahkarana / 4 Mind Faculties (Exact row names from Excel Sheet1) */
 const ANTAHKARANA_LABELS: { title: string; rows: string[] }[] = [
-  { title: 'Manas (Mind)', rows: ['Sensory Processing', 'Reactive Mind', 'Desire Center', 'Emotional Response', 'Memory Access', 'Imagination', 'Dream State'] },
-  { title: 'Buddhi (Intellect)', rows: ['Discernment Power', 'Logical Analysis', 'Wisdom Filter', 'Decision Making', 'Higher Reasoning', 'Intuitive Logic', 'Truth Recognition'] },
-  { title: 'Ahamkara (Ego)', rows: ['Identity Formation', 'Self Concept', 'Role Attachment', 'Pride Level', 'Boundary Setting', 'Personal Will', 'Ego Integration'] },
-  { title: 'Chitta (Memory/Consciousness)', rows: ['Memory Field', 'Subconscious Depth', 'Samskara Imprints', 'Cosmic Recording', 'Deep Awareness', 'Soul Memory', 'Universal Connection'] }
+  { title: 'MANAS (Mind)', rows: ['Perception', 'Volition', 'Processing', 'Projection', 'Imagination', 'Instability', 'Expression'] },
+  { title: 'BUDDHI (Intellect)', rows: ['Discrimination', 'Decision', 'Understanding', 'Wisdom', 'Realization', 'Judgment', 'Clarity'] },
+  { title: 'AHAMKARA (Ego)', rows: ['Identity', 'Self-Concept', 'Identification', 'Pride', 'Protection', 'Ownership', 'Liberation'] },
+  { title: 'CHITTA (Memory/Consciousness)', rows: ['Memory', 'Patterns', 'Imagination', 'Intuition', 'Subconscious', 'Samskara', 'Realization'] }
 ];
 
 /** 12 Cosmic Master Codes configuration */
@@ -503,7 +521,7 @@ function buildTable(
 
 /**
  * Main QSS cascade engine with Excel guideline-based calibration support.
- * Derives all 54 tables from the 7 Parental Legacy factor totals.
+ * Derives all 54 tables from the 7 Parental Legacy factor totals, with 100% exact Excel names.
  */
 export function calculateQSS(
   factors: FactorValue[],
@@ -514,7 +532,7 @@ export function calculateQSS(
   const tables: QssTable[] = [];
   const targetMul = cfg.targetMultiplierPct;
 
-  // ── TIER 2: Chakra Levels (Table 2) & Aura Levels (Table 3) ───────────────
+  // ── TIER 2: Table 2 (CHAKRA LEVELS) & Table 3 (AURA LEVELS) ──────────────
   const chakraGuideline: QssTableGuideline = {
     currentMinPct: 39.5,
     currentMaxPct: 44.5,
@@ -527,7 +545,7 @@ export function calculateQSS(
   };
   const chakraRows: QssTableRow[] = totals.map((t, i) =>
     buildRow(`chakra_${i}`, CHAKRA_LABELS[i], t, cfg.chakraPct, targetMul, factors[i].factorId));
-  tables.push(buildTable(2, 'Chakra Levels', 2, 'Tier 2: Energy Architecture', chakraRows, chakraGuideline));
+  tables.push(buildTable(2, 'CHAKRA LEVELS', 2, 'Tier 2: Energy Architecture', chakraRows, chakraGuideline));
 
   const auraGuideline: QssTableGuideline = {
     currentMinPct: 33.5,
@@ -541,10 +559,10 @@ export function calculateQSS(
   };
   const auraRows: QssTableRow[] = totals.map((t, i) =>
     buildRow(`aura_${i}`, AURA_LABELS[i], t, cfg.auraPct, targetMul, factors[i].factorId));
-  tables.push(buildTable(3, 'Aura Levels', 2, 'Tier 2: Energy Architecture', auraRows, auraGuideline));
+  tables.push(buildTable(3, 'AURA LEVELS', 2, 'Tier 2: Energy Architecture', auraRows, auraGuideline));
 
-  // ── TIER 3: Karmic Tables (4–6) + 7 Elements (7–13) ─────────────────────
-  // Table 4: Positive Karmic Deeds
+  // ── TIER 3: Karmic Tables (4–6) & 7 Elements (7–13) ─────────────────────
+  // Table 4: POSITIVE KARMIC DEEDS
   const t4Guideline: QssTableGuideline = {
     currentMinPct: 28.5,
     currentMaxPct: 33.5,
@@ -559,7 +577,7 @@ export function calculateQSS(
     buildRow(`karmic_4_${i}`, name, totals[i], cfg.positiveKarmicPct, targetMul, factors[i].factorId));
   tables.push(buildTable(4, KARMIC_ROW_LABELS[0].title, 3, 'Tier 3: Karmic & Elements', t4Rows, t4Guideline));
 
-  // Table 5: Karmic Refinement Sectors
+  // Table 5: KARMIC REFINEMENT SECTORS
   const t5Guideline: QssTableGuideline = {
     currentMinPct: 41.5,
     currentMaxPct: 44.5,
@@ -574,7 +592,7 @@ export function calculateQSS(
     buildRow(`karmic_5_${i}`, name, totals[i], cfg.karmicRefinementPct, targetMul, factors[i].factorId));
   tables.push(buildTable(5, KARMIC_ROW_LABELS[1].title, 3, 'Tier 3: Karmic & Elements', t5Rows, t5Guideline));
 
-  // Table 6: Karmic Balancing
+  // Table 6: KARMIC BALANCING
   const t6Guideline: QssTableGuideline = {
     currentMinPct: 85.5,
     currentMaxPct: 88.5,
@@ -589,7 +607,7 @@ export function calculateQSS(
     buildRow(`karmic_6_${i}`, name, t5Rows[i].currentStatus, cfg.karmicBalancingPct, targetMul, factors[i].factorId));
   tables.push(buildTable(6, KARMIC_ROW_LABELS[2].title, 3, 'Tier 3: Karmic & Elements', t6Rows, t6Guideline));
 
-  // Table 7: 7 Great Elements (Pancha Mahabhuta)
+  // Tables 7–13: 7 Great Elements
   const elementPcts = [
     cfg.elementEarthPct,
     cfg.elementWaterPct,
@@ -599,37 +617,47 @@ export function calculateQSS(
     cfg.elementTimePct,
     cfg.elementSoulPct
   ];
-  const t7Guideline: QssTableGuideline = {
-    currentMinPct: 31.5,
-    currentMaxPct: 69.5,
-    appliedCurrentPct: Number(((cfg.elementEarthPct + cfg.elementWaterPct + cfg.elementFirePct + cfg.elementAirPct + cfg.elementEtherPct + cfg.elementTimePct + cfg.elementSoulPct) / 7).toFixed(1)),
-    targetMinPct: 135.0,
-    targetMaxPct: 140.0,
-    appliedTargetPct: targetMul,
-    source: 'Total of Parental Legacy (Elemental Multipliers)',
-    guidanceText: 'Current status Values are calibrated per element (Earth: 55.5-58.5%, Water: 61.5-66.5%, Fire: 59.5-63.5%, Air: 67.5-69.5%, Ether: 33.5-38.5%, Time: 64.5-68.5%, Soul: 31.5-35.5%). Target Level 135% to 140%'
-  };
-  const elementRows: QssTableRow[] = totals.map((t, i) =>
-    buildRow(`element_${i}`, ELEMENT_LABELS[i], t, elementPcts[i], targetMul, factors[i].factorId));
-  tables.push(buildTable(7, '7 Great Elements (Pancha Mahabhuta)', 3, 'Tier 3: Karmic & Elements', elementRows, t7Guideline));
 
-  // Individual element tables (8–13)
   const elementGuidelines: QssTableGuideline[] = [
-    { currentMinPct: 55.5, currentMaxPct: 58.5, appliedCurrentPct: cfg.elementEarthPct, targetMinPct: 135, targetMaxPct: 140, appliedTargetPct: targetMul, source: 'Parental Legacy Total', guidanceText: 'Current status Values are taken 55.5% to 58.5% of the total of Parental Legacy. Target Level 135% to 140%' },
-    { currentMinPct: 61.5, currentMaxPct: 66.5, appliedCurrentPct: cfg.elementWaterPct, targetMinPct: 135, targetMaxPct: 140, appliedTargetPct: targetMul, source: 'Parental Legacy Total', guidanceText: 'Current status Values are taken 61.5% to 66.5% of the total of Parental Legacy. Target Level 135% to 140%' },
-    { currentMinPct: 59.5, currentMaxPct: 63.5, appliedCurrentPct: cfg.elementFirePct, targetMinPct: 135, targetMaxPct: 140, appliedTargetPct: targetMul, source: 'Parental Legacy Total', guidanceText: 'Current status Values are taken 59.5% to 63.5% of the total of Parental Legacy. Target Level 135% to 140%' },
-    { currentMinPct: 67.5, currentMaxPct: 69.5, appliedCurrentPct: cfg.elementAirPct, targetMinPct: 135, targetMaxPct: 140, appliedTargetPct: targetMul, source: 'Parental Legacy Total', guidanceText: 'Current status Values are taken 67.5% to 69.5% of the total of Parental Legacy. Target Level 135% to 140%' },
-    { currentMinPct: 33.5, currentMaxPct: 38.5, appliedCurrentPct: cfg.elementEtherPct, targetMinPct: 135, targetMaxPct: 140, appliedTargetPct: targetMul, source: 'Parental Legacy Total', guidanceText: 'Current status Values are taken 33.5% to 38.5% of the total of Parental Legacy. Target Level 135% to 140%' },
-    { currentMinPct: 64.5, currentMaxPct: 68.5, appliedCurrentPct: cfg.elementTimePct, targetMinPct: 135, targetMaxPct: 140, appliedTargetPct: targetMul, source: 'Parental Legacy Total', guidanceText: 'Current status Values are taken 64.5% to 68.5% of the total of Parental Legacy. Target Level 135% to 140%' }
+    { currentMinPct: 55.5, currentMaxPct: 58.5, appliedCurrentPct: cfg.elementEarthPct, targetMinPct: 135, targetMaxPct: 140, appliedTargetPct: targetMul, source: 'Total of Parental Legacy', guidanceText: 'Current status Values are taken 55.5% to 58.5% of the total of Parental Legacy. Target Level 135% to 140% of Current Status' },
+    { currentMinPct: 61.5, currentMaxPct: 66.5, appliedCurrentPct: cfg.elementWaterPct, targetMinPct: 135, targetMaxPct: 140, appliedTargetPct: targetMul, source: 'Total of Parental Legacy', guidanceText: 'Current status Values are taken 61.5% to 66.5% of the total of Parental Legacy. Target Level 135% to 140% of Current Status' },
+    { currentMinPct: 59.5, currentMaxPct: 63.5, appliedCurrentPct: cfg.elementFirePct, targetMinPct: 135, targetMaxPct: 140, appliedTargetPct: targetMul, source: 'Total of Parental Legacy', guidanceText: 'Current status Values are taken 59.5% to 63.5% of the total of Parental Legacy. Target Level 135% to 140% of Current Status' },
+    { currentMinPct: 67.5, currentMaxPct: 69.5, appliedCurrentPct: cfg.elementAirPct, targetMinPct: 135, targetMaxPct: 140, appliedTargetPct: targetMul, source: 'Total of Parental Legacy', guidanceText: 'Current status Values are taken 67.5% to 69.5% of the total of Parental Legacy. Target Level 135% to 140% of Current Status' },
+    { currentMinPct: 33.5, currentMaxPct: 38.5, appliedCurrentPct: cfg.elementEtherPct, targetMinPct: 135, targetMaxPct: 140, appliedTargetPct: targetMul, source: 'Total of Parental Legacy', guidanceText: 'Current status Values are taken 33.5% to 38.5% of the total of Parental Legacy. Target Level 135% to 140% of Current Status' },
+    { currentMinPct: 64.5, currentMaxPct: 68.5, appliedCurrentPct: cfg.elementTimePct, targetMinPct: 135, targetMaxPct: 140, appliedTargetPct: targetMul, source: 'Total of Parental Legacy', guidanceText: 'Current status Values are taken 64.5% to 68.5% of the total of Parental Legacy. Target Level 135% to 140% of Current Status' },
+    { currentMinPct: 31.5, currentMaxPct: 35.5, appliedCurrentPct: cfg.elementSoulPct, targetMinPct: 135, targetMaxPct: 140, appliedTargetPct: targetMul, source: 'Total of Parental Legacy', guidanceText: 'Current status Values are taken 31.5% to 35.5% of the total of Parental Legacy. Target Level 135% to 140% of Current Status' }
   ];
 
-  for (let e = 0; e < 6; e++) {
+  const elementTableTitles = [
+    'EARTH (Prithvi) ELEMENT',
+    'WATER (Jala) ELEMENT',
+    'FIRE (Agni) ELEMENT',
+    'AIR (Vayu) ELEMENT',
+    'ETHER (Akasha) ELEMENT',
+    'TIME (Kala) ELEMENT',
+    'SOUL (Atman) ELEMENT'
+  ];
+
+  const elementTables: QssTable[] = [];
+  for (let e = 0; e < 7; e++) {
     const rows = ELEMENT_SUBFACTOR_LABELS[e].map((name, i) =>
-      buildRow(`elem_${e}_${i}`, name, totals[Math.min(i, totals.length - 1)], elementPcts[e], targetMul, factors[Math.min(i, factors.length - 1)].factorId));
-    tables.push(buildTable(8 + e, `${ELEMENT_LABELS[e]} — Factor Analysis`, 3, 'Tier 3: Karmic & Elements', rows, elementGuidelines[e]));
+      buildRow(`elem_${e}_${i}`, name, totals[i], elementPcts[e], targetMul, factors[i].factorId)
+    );
+    const table = buildTable(7 + e, elementTableTitles[e], 3, 'Tier 3: Karmic & Elements', rows, elementGuidelines[e]);
+    elementTables.push(table);
+    tables.push(table);
   }
 
-  // ── TIER 4: Individual Chakra Details (14–20) + 7 Koshas (21–27) ─────────
+  // ── TIER 4: Tables 14–20 (7 Detailed Chakras) & Tables 21–27 (7 Koshas) ──
+  const chakraTableTitles = [
+    'ROOT CHAKRA',
+    'SACRAL CHAKRA',
+    'SOLAR PLEXUS CHAKRA',
+    'HEART CHAKRA',
+    'THROAT CHAKRA',
+    'THIRD EYE CHAKRA',
+    'CROWN CHAKRA'
+  ];
   for (let c = 0; c < 7; c++) {
     const b = DETAILED_CHAKRA_BOUNDS[c];
     const appliedP = cfg.mode === 'min' ? b.min : (cfg.mode === 'max' ? b.max : Number(((b.min + b.max) / 2).toFixed(2)));
@@ -644,32 +672,39 @@ export function calculateQSS(
       guidanceText: `Current status Values are taken ${b.min}% to ${b.max}% of the total of Parental Legacy. Target Level 135% to 140% of Current Status`
     };
     const rows = CHAKRA_SUBFACTOR_LABELS[c].map((name, si) =>
-      buildRow(`chakra_detail_${c}_${si}`, name, totals[c], appliedP, targetMul, factors[c].factorId));
-    tables.push(buildTable(14 + c, `${CHAKRA_LABELS[c]} — Detailed Analysis`, 4, 'Tier 4: Granular Chakra & Kosha', rows, cGuideline));
+      buildRow(`chakra_detail_${c}_${si}`, name, totals[si], appliedP, targetMul, factors[si].factorId)
+    );
+    tables.push(buildTable(14 + c, chakraTableTitles[c], 4, 'Tier 4: Granular Chakra & Kosha', rows, cGuideline));
   }
 
   // Koshas (Tables 21–27): Guidance is 65% of respective Chakra Current Status
-  const koshaGuideline: QssTableGuideline = {
-    currentMinPct: 65.0,
-    currentMaxPct: 65.0,
-    appliedCurrentPct: cfg.koshasPct,
-    targetMinPct: 135.0,
-    targetMaxPct: 140.0,
-    appliedTargetPct: targetMul,
-    source: 'Respective Chakra Current Status',
-    guidanceText: 'Current status Values are taken 65% of the Current Status of respective Chakra. Target Level 135% to 140% of Current Status'
-  };
-  const koshaRows: QssTableRow[] = totals.map((t, i) =>
-    buildRow(`kosha_${i}`, KOSHA_LABELS[i], chakraRows[i].currentStatus, cfg.koshasPct, targetMul, factors[i].factorId));
-  tables.push(buildTable(21, '7 Koshas (Sheaths of Existence)', 4, 'Tier 4: Granular Chakra & Kosha', koshaRows, koshaGuideline));
-
-  for (let k = 0; k < 6; k++) {
+  const koshaTableTitles = [
+    'THE FOOD SHEATH',
+    'THE ENERGY SHEATH',
+    'THE MENTAL SHEATH',
+    'THE WISDOM SHEATH',
+    'THE BLISS SHEATH',
+    'THE IMMORTALITY SHEATH',
+    'THE CONSCIOUSNESS SHEATH'
+  ];
+  for (let k = 0; k < 7; k++) {
+    const kGuideline: QssTableGuideline = {
+      currentMinPct: 65.0,
+      currentMaxPct: 65.0,
+      appliedCurrentPct: cfg.koshasPct,
+      targetMinPct: 135.0,
+      targetMaxPct: 140.0,
+      appliedTargetPct: targetMul,
+      source: `Current Status of ${CHAKRA_LABELS[k]}`,
+      guidanceText: `Current status Values are taken 65% of the Current Status of ${CHAKRA_LABELS[k]}. Target Level 135% to 140% of Current Status`
+    };
     const rows = KOSHA_SUBFACTOR_LABELS[k].map((name, i) =>
-      buildRow(`kosha_detail_${k}_${i}`, name, chakraRows[Math.min(i, chakraRows.length - 1)].currentStatus, cfg.koshasPct, targetMul, factors[Math.min(i, factors.length - 1)].factorId));
-    tables.push(buildTable(22 + k, `${KOSHA_LABELS[k]} — Factor Analysis`, 4, 'Tier 4: Granular Chakra & Kosha', rows, koshaGuideline));
+      buildRow(`kosha_detail_${k}_${i}`, name, chakraRows[i].currentStatus, cfg.koshasPct, targetMul, factors[i].factorId)
+    );
+    tables.push(buildTable(21 + k, koshaTableTitles[k], 4, 'Tier 4: Granular Chakra & Kosha', rows, kGuideline));
   }
 
-  // ── TIER 5: 4 Pillars (28–31) + Psychological (32–34) + Tridosha (35–37) + Antahkarana (38–41) ─
+  // ── TIER 5: Tables 28–31 (4 Pillars) + Tables 32–34 (Psychological) + Tables 35–37 (Tridosha) + Tables 38–41 (Antahkarana) ─
   const pillarGuideline: QssTableGuideline = {
     currentMinPct: 45.5,
     currentMaxPct: 55.5,
@@ -682,14 +717,20 @@ export function calculateQSS(
   };
 
   PILLAR_LABELS.forEach(({ title, rows: rowNames }, pi) => {
+    // Uses respective element table: Table 7 (Earth) -> 28, Table 8 (Water) -> 29, Table 9 (Fire) -> 30, Table 10 (Air) -> 31
+    const sourceElemTable = elementTables[pi];
     const rows = rowNames.map((name, i) =>
-      buildRow(`pillar_${pi}_${i}`, name, elementRows[pi].currentStatus, cfg.pillarsPct, targetMul, factors[i].factorId));
+      buildRow(`pillar_${pi}_${i}`, name, sourceElemTable.rows[i].currentStatus, cfg.pillarsPct, targetMul, factors[i].factorId)
+    );
     tables.push(buildTable(28 + pi, title, 5, 'Tier 5: Lifestyle & Mind', rows, pillarGuideline));
   });
 
   PSYCHOLOGICAL_LABELS.forEach(({ title, rows: rowNames }, pi) => {
+    // Table 11 (Ether) -> 32, Table 12 (Time) -> 33, Table 13 (Soul) -> 34
+    const sourceElemTable = elementTables[4 + pi];
     const rows = rowNames.map((name, i) =>
-      buildRow(`psych_${pi}_${i}`, name, elementRows[4 + pi].currentStatus, cfg.pillarsPct, targetMul, factors[i].factorId));
+      buildRow(`psych_${pi}_${i}`, name, sourceElemTable.rows[i].currentStatus, cfg.pillarsPct, targetMul, factors[i].factorId)
+    );
     tables.push(buildTable(32 + pi, title, 5, 'Tier 5: Lifestyle & Mind', rows, pillarGuideline));
   });
 
@@ -705,18 +746,24 @@ export function calculateQSS(
   };
 
   TRIDOSHA_LABELS.forEach(({ title, rows: rowNames }, di) => {
+    // Table 7 (Earth) -> 35 (Vata), Table 8 (Water) -> 36 (Pitta), Table 9 (Fire) -> 37 (Kapha)
+    const sourceElemTable = elementTables[di];
     const rows = rowNames.map((name, i) =>
-      buildRow(`dosha_${di}_${i}`, name, elementRows[di].currentStatus, cfg.doshasAndAntahkaranaPct, targetMul, factors[i].factorId));
+      buildRow(`dosha_${di}_${i}`, name, sourceElemTable.rows[i].currentStatus, cfg.doshasAndAntahkaranaPct, targetMul, factors[i].factorId)
+    );
     tables.push(buildTable(35 + di, title, 5, 'Tier 5: Lifestyle & Mind', rows, doshaGuideline));
   });
 
   ANTAHKARANA_LABELS.forEach(({ title, rows: rowNames }, ai) => {
+    // Table 10 (Air) -> 38 (Manas), Table 11 (Ether) -> 39 (Buddhi), Table 12 (Time) -> 40 (Ahamkara), Table 13 (Soul) -> 41 (Chitta)
+    const sourceElemTable = elementTables[3 + ai];
     const rows = rowNames.map((name, i) =>
-      buildRow(`antah_${ai}_${i}`, name, elementRows[3 + ai].currentStatus, cfg.doshasAndAntahkaranaPct, targetMul, factors[i].factorId));
+      buildRow(`antah_${ai}_${i}`, name, sourceElemTable.rows[i].currentStatus, cfg.doshasAndAntahkaranaPct, targetMul, factors[i].factorId)
+    );
     tables.push(buildTable(38 + ai, title, 5, 'Tier 5: Lifestyle & Mind', rows, doshaGuideline));
   });
 
-  // ── TIER 6: 12 Cosmic Codes (42–53) ─────────────────────────────────────
+  // ── TIER 6: 12 Cosmic Codes (42–53) & Master Comparison (54) ────────────
   const cosmicGuideline: QssTableGuideline = {
     currentMinPct: 39.5,
     currentMaxPct: 44.5,
