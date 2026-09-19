@@ -19,21 +19,19 @@ The application is deployed on **100% AWS Free Tier Infrastructure ($0/month)**:
 - 🍃 **Database:** MongoDB Atlas M0 Shared Cluster (AWS Region)
 - 🐳 **Containerization:** Multi-stage production Docker container with Nginx & Express.js runner.
 
-Detailed AWS setup guide is available in [`docs/AWS_FREE_TIER_DEPLOYMENT.md`](docs/AWS_FREE_TIER_DEPLOYMENT.md).
-
 ---
 
-## ✨ Feature Set & Bonus Score Matrix (+35 Points Achieved)
+## ✨ Feature Set
 
 | Category | Features & Capabilities |
 |---|---|
 | **Core Calculation** | Deterministic DOB-seeded Mulberry32 PRNG · 7 Life Factors · Millipoint integer balancing guaranteeing grandTotal = 100.000 |
-| **Authentication (+10)** | JWT (HS256) · bcrypt 12-round password hashing · Password strength enforcement · Guest → user history claim migration |
-| **Database (+10)** | MongoDB via Mongoose · Paginated calculation history · Compound indexes · Soft guest session support |
+| **Authentication** | JWT (HS256) · bcrypt 12-round password hashing · Password strength enforcement · Guest → user history claim migration |
+| **Database** | MongoDB via Mongoose · Paginated calculation history · Compound indexes · Soft guest session support |
 | **Visualisations** | Grouped Bar Chart · Donut Split with high-contrast center badge · 7-Axis Radar Profile (Recharts) |
-| **PDF Export (+5)** | Vector PDF report generator (`jsPDF` + `jspdf-autotable`) with executive layout, metrics & table |
-| **CSV Export (+5)** | RFC 4180 CSV export utility on client and server (`GET /api/v1/history/:id/csv`) |
-| **Dark/Light Theme (+5)** | Persistent dark/light mode toggle adapting all card backgrounds, typography, and chart SVG colors |
+| **PDF Export** | Vector PDF report generator (`jsPDF` + `jspdf-autotable`) with executive layout, metrics & table |
+| **CSV Export** | RFC 4180 CSV export utility on client and server (`GET /api/v1/history/:id/csv`) |
+| **Dark/Light Theme** | Persistent dark/light mode toggle adapting all card backgrounds, typography, and chart SVG colors |
 | **Resilience** | Offline-first client calculation for instant 0ms preview before backend cloud sync · In-memory MongoDB fallback in dev |
 
 ---
