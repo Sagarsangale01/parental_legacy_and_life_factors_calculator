@@ -7,11 +7,12 @@ import { ChartsGrid } from './components/ChartsGrid';
 import { ExportActionBar } from './components/ExportActionBar';
 import { AuthModal } from './components/AuthModal';
 import { HistoryModal } from './components/HistoryModal';
+import { QssDashboard } from './components/QssDashboard';
 import { CalculationResult } from './types';
 import { calculateLifeFactors, validateDOB } from './services/calculatorEngine';
 import { calculateOnServer } from './services/api';
 import { useAuth } from './context/AuthContext';
-import { BarChart3, Table as TableIcon, Sparkles, CheckCircle2, Cloud, ShieldCheck, Database, LogIn } from 'lucide-react';
+import { BarChart3, Table as TableIcon, Sparkles, CheckCircle2, Cloud, ShieldCheck, Database, LogIn, Layers } from 'lucide-react';
 
 export const App: React.FC = () => {
   const { user, isAuthenticated, openAuthModal } = useAuth();
@@ -19,7 +20,7 @@ export const App: React.FC = () => {
   const [calculation, setCalculation] = useState<CalculationResult | null>(null);
   const [error, setError] = useState<string | undefined>(undefined);
   const [isCalculating, setIsCalculating] = useState<boolean>(false);
-  const [activeTab, setActiveTab] = useState<'visuals' | 'table'>('visuals');
+  const [activeTab, setActiveTab] = useState<'visuals' | 'table' | 'qss'>('visuals');
   const [isHistoryOpen, setIsHistoryOpen] = useState<boolean>(false);
 
   // Core reactive calculation handler
@@ -153,7 +154,7 @@ export const App: React.FC = () => {
 
             {/* View Switcher Tabs */}
             <div className="flex items-center justify-between border-b pb-2" style={{ borderColor: 'var(--border)' }}>
-              <div className="flex items-center space-x-2">
+              <div className="flex items-center space-x-2 flex-wrap gap-y-2">
                 <button
                   onClick={() => setActiveTab('visuals')}
                   className={`flex items-center space-x-2 px-4 py-2 text-sm font-bold rounded-xl transition-all duration-200 ${
@@ -168,7 +169,7 @@ export const App: React.FC = () => {
                   }
                 >
                   <BarChart3 className="w-4 h-4" />
-                  <span>Visual Comparison Charts</span>
+                  <span>Visual Charts</span>
                 </button>
 
                 <button
@@ -185,7 +186,25 @@ export const App: React.FC = () => {
                   }
                 >
                   <TableIcon className="w-4 h-4" />
-                  <span>Data Table View</span>
+                  <span>Data Table</span>
+                </button>
+
+                <button
+                  onClick={() => setActiveTab('qss')}
+                  className={`flex items-center space-x-2 px-4 py-2 text-sm font-bold rounded-xl transition-all duration-200 ${
+                    activeTab === 'qss'
+                      ? 'text-white shadow-lg'
+                      : 'hover:opacity-80'
+                  }`}
+                  style={
+                    activeTab === 'qss'
+                      ? { background: 'linear-gradient(135deg, #7c3aed, #a855f7)', boxShadow: '0 4px 14px rgba(168,85,247,0.35)' }
+                      : { color: 'var(--text-secondary)', background: 'var(--bg-surface)', border: '1px solid var(--border)' }
+                  }
+                >
+                  <Layers className="w-4 h-4" />
+                  <span>QSS Analysis</span>
+                  <span className="text-[9px] px-1.5 py-0.5 rounded font-black" style={{ background: 'rgba(168,85,247,0.25)', color: '#c084fc' }}>54 TABLES</span>
                 </button>
               </div>
 
@@ -199,8 +218,10 @@ export const App: React.FC = () => {
             {/* Tab View Content */}
             {activeTab === 'visuals' ? (
               <ChartsGrid calculation={calculation} />
-            ) : (
+            ) : activeTab === 'table' ? (
               <FactorTable calculation={calculation} />
+            ) : (
+              <QssDashboard calculation={calculation} />
             )}
 
             {/* Export Action Bar */}

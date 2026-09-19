@@ -1,4 +1,16 @@
-import { FactorRange, FactorValue, CalculationResult } from '../types';
+import {
+  FactorRange,
+  FactorValue,
+  CalculationResult,
+  QssResult,
+  QssTable,
+  QssTableRow,
+  QssTableGuideline,
+  QssCalibrationConfig,
+  SpiritualObservance,
+  VedicMapping,
+  CosmicCode
+} from '../types';
 
 export const LIFE_FACTORS_CONFIG: FactorRange[] = [
   {
@@ -200,6 +212,535 @@ export function calculateLifeFactors(dobString: string): CalculationResult {
     motherTotal: finalMotherTotal,
     fatherTotal: finalFatherTotal,
     grandTotal,
-    calculatedAt: new Date().toISOString()
+    calculatedAt: new Date().toISOString(),
+    qss: calculateQSS(factors)
   };
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+//  QSS CALIBRATION PRESETS & GUIDELINE CONSTANTS
+//  Directly modeled from Excel Sheet1 authoritative guidance rules
+// ─────────────────────────────────────────────────────────────────────────────
+
+export const DEFAULT_QSS_CONFIG: QssCalibrationConfig = {
+  mode: 'midpoint',
+  chakraPct: 42.0,            // 39.5% – 44.5% (midpoint = 42.0%)
+  auraPct: 36.0,              // 33.5% – 38.5% (midpoint = 36.0%)
+  positiveKarmicPct: 31.0,    // 28.5% – 33.5% (midpoint = 31.0%)
+  karmicRefinementPct: 43.0,  // 41.5% – 44.5% (midpoint = 43.0%)
+  karmicBalancingPct: 87.0,   // 85.5% – 88.5% (midpoint = 87.0%)
+  elementEarthPct: 57.0,      // 55.5% – 58.5% (midpoint = 57.0%)
+  elementWaterPct: 64.0,      // 61.5% – 66.5% (midpoint = 64.0%)
+  elementFirePct: 61.5,       // 59.5% – 63.5% (midpoint = 61.5%)
+  elementAirPct: 68.5,        // 67.5% – 69.5% (midpoint = 68.5%)
+  elementEtherPct: 36.0,      // 33.5% – 38.5% (midpoint = 36.0%)
+  elementTimePct: 66.5,       // 64.5% – 68.5% (midpoint = 66.5%)
+  elementSoulPct: 33.5,       // 31.5% – 35.5% (midpoint = 33.5%)
+  koshasPct: 65.0,            // exactly 65% of respective chakra
+  pillarsPct: 50.5,           // 45.5% – 55.5% (midpoint = 50.5%)
+  doshasAndAntahkaranaPct: 69.75, // 68.5% – 71.0% (midpoint = 69.75%)
+  targetMultiplierPct: 137.5  // 135.0% – 140.0% (midpoint = 137.5%)
+};
+
+export const MIN_BOUNDS_QSS_CONFIG: QssCalibrationConfig = {
+  mode: 'min',
+  chakraPct: 39.5,
+  auraPct: 33.5,
+  positiveKarmicPct: 28.5,
+  karmicRefinementPct: 41.5,
+  karmicBalancingPct: 85.5,
+  elementEarthPct: 55.5,
+  elementWaterPct: 61.5,
+  elementFirePct: 59.5,
+  elementAirPct: 67.5,
+  elementEtherPct: 33.5,
+  elementTimePct: 64.5,
+  elementSoulPct: 31.5,
+  koshasPct: 65.0,
+  pillarsPct: 45.5,
+  doshasAndAntahkaranaPct: 68.5,
+  targetMultiplierPct: 135.0
+};
+
+export const MAX_BOUNDS_QSS_CONFIG: QssCalibrationConfig = {
+  mode: 'max',
+  chakraPct: 44.5,
+  auraPct: 38.5,
+  positiveKarmicPct: 33.5,
+  karmicRefinementPct: 44.5,
+  karmicBalancingPct: 88.5,
+  elementEarthPct: 58.5,
+  elementWaterPct: 66.5,
+  elementFirePct: 63.5,
+  elementAirPct: 69.5,
+  elementEtherPct: 38.5,
+  elementTimePct: 68.5,
+  elementSoulPct: 35.5,
+  koshasPct: 65.0,
+  pillarsPct: 55.5,
+  doshasAndAntahkaranaPct: 71.0,
+  targetMultiplierPct: 140.0
+};
+
+// ─────────────────────────────────────────────────────────────────────────────
+//  QSS LABELS & STRUCTURAL METADATA
+// ─────────────────────────────────────────────────────────────────────────────
+
+/** Maps factor index (0-6) to Chakra name */
+const CHAKRA_LABELS: string[] = [
+  'Root Chakra (Muladhara)',
+  'Sacral Chakra (Svadhisthana)',
+  'Solar Plexus (Manipura)',
+  'Heart Chakra (Anahata)',
+  'Throat Chakra (Vishuddha)',
+  'Third Eye (Ajna)',
+  'Crown Chakra (Sahasrara)'
+];
+
+/** Maps factor index (0-6) to Aura layer name */
+const AURA_LABELS: string[] = [
+  'Physical Aura',
+  'Etheric Aura',
+  'Emotional Aura',
+  'Mental Aura',
+  'Astral Aura',
+  'Celestial Aura',
+  'Ketheric Template'
+];
+
+/** 7 Great Elements */
+const ELEMENT_LABELS: string[] = [
+  'Earth (Prithvi)',
+  'Water (Jala)',
+  'Fire (Agni)',
+  'Air (Vayu)',
+  'Ether (Akasha)',
+  'Time (Kala)',
+  'Soul (Atman)'
+];
+
+/** Karmic Tables 4–6 rows */
+const KARMIC_ROW_LABELS: { table: number; title: string; rows: string[] }[] = [
+  { table: 4, title: 'Positive Karmic Deeds', rows: ['Compassionate Acts', 'Charitable Service', 'Spiritual Merit', 'Ancestral Blessings', 'Righteous Conduct', 'Wisdom Sharing', 'Divine Devotion'] },
+  { table: 5, title: 'Karmic Refinement Sectors', rows: ['Health Karma', 'Wealth Karma', 'Relationship Karma', 'Career Karma', 'Spiritual Karma', 'Family Karma', 'Destiny Karma'] },
+  { table: 6, title: 'Karmic Balancing', rows: ['Resolution Index', 'Clearance Rate', 'Debt Offset', 'Grace Accumulation', 'Soul Contract Progress', 'Ancestral Healing', 'Cosmic Alignment'] }
+];
+
+/** 7 Koshas */
+const KOSHA_LABELS: string[] = [
+  'Annamaya Kosha (Food Sheath)',
+  'Pranamaya Kosha (Energy Sheath)',
+  'Manomaya Kosha (Mental Sheath)',
+  'Vijnanamaya Kosha (Wisdom Sheath)',
+  'Anandamaya Kosha (Bliss Sheath)',
+  'Amritamaya Kosha (Immortality Sheath)',
+  'Shivamaya Kosha (Consciousness Sheath)'
+];
+
+/** Individual Chakra sub-factor labels (for Tables 14–20) */
+const CHAKRA_SUBFACTOR_LABELS: string[][] = [
+  ['Physical Security', 'Grounding Energy', 'Survival Instinct', 'Earth Connection', 'Material Stability', 'Ancestral Roots', 'Body Vitality'],
+  ['Creative Force', 'Emotional Flow', 'Sexual Energy', 'Pleasure Balance', 'Passion Drive', 'Relational Joy', 'Sensory Harmony'],
+  ['Personal Power', 'Willpower', 'Confidence Level', 'Ambition Drive', 'Self-Mastery', 'Digestive Fire', 'Action Energy'],
+  ['Unconditional Love', 'Compassion Depth', 'Heart Healing', 'Emotional Balance', 'Forgiveness', 'Empathy Capacity', 'Harmony Field'],
+  ['Communication Clarity', 'Authentic Expression', 'Creative Voice', 'Truth Resonance', 'Listening Ability', 'Sonic Frequency', 'Vibrational Speech'],
+  ['Intuitive Sight', 'Psychic Clarity', 'Mental Vision', 'Wisdom Access', 'Inner Knowing', 'Dream Clarity', 'Higher Perception'],
+  ['Spiritual Connection', 'Divine Grace', 'Universal Unity', 'Enlightenment Index', 'Cosmic Awareness', 'Higher Self Link', 'Transcendence']
+];
+
+/** Specific guideline bounds for detailed Chakras 14–20 */
+const DETAILED_CHAKRA_BOUNDS: { min: number; max: number }[] = [
+  { min: 71.5, max: 74.5 }, // Root
+  { min: 68.5, max: 71.0 }, // Sacral
+  { min: 66.5, max: 68.0 }, // Solar Plexus
+  { min: 64.5, max: 66.0 }, // Heart
+  { min: 60.5, max: 64.0 }, // Throat
+  { min: 38.5, max: 44.5 }, // Third Eye
+  { min: 23.5, max: 28.5 }  // Crown
+];
+
+/** 4 Pillars of Life */
+const PILLAR_LABELS: { title: string; rows: string[] }[] = [
+  { title: 'Ahaar (The Intake)', rows: ['Nutritional Quality', 'Mental Nourishment', 'Emotional Intake', 'Spiritual Food', 'Sensory Input', 'Social Nourishment', 'Creative Fuel'] },
+  { title: 'Vihaar (The Recreation)', rows: ['Physical Play', 'Creative Leisure', 'Social Recreation', 'Nature Connection', 'Artistic Expression', 'Spiritual Retreat', 'Mind Recreation'] },
+  { title: 'Aachar (The Conduct)', rows: ['Ethical Behavior', 'Social Responsibility', 'Disciplined Routine', 'Righteous Action', 'Moral Integrity', 'Environmental Care', 'Dharmic Living'] },
+  { title: 'Vichaar (The Thinking)', rows: ['Positive Mindset', 'Creative Thinking', 'Analytical Clarity', 'Visionary Thought', 'Philosophical Depth', 'Problem Solving', 'Meditative Focus'] }
+];
+
+/** Psychological Structures (Tables 32–34) */
+const PSYCHOLOGICAL_LABELS: { title: string; rows: string[] }[] = [
+  { title: 'The Complexes (Bhavana)', rows: ['Inferiority Pattern', 'Superiority Pattern', 'Abandonment Pattern', 'Control Pattern', 'Validation Need', 'Perfectionism', 'Shadow Integration'] },
+  { title: 'The Acceptance (Sweekar)', rows: ['Self Acceptance', 'Other Acceptance', 'Life Acceptance', 'Past Acceptance', 'Present Acceptance', 'Future Acceptance', 'Cosmic Acceptance'] },
+  { title: 'The Decision (Nirdhaar)', rows: ['Career Decisiveness', 'Relationship Choices', 'Financial Decisions', 'Spiritual Decisions', 'Health Choices', 'Creative Direction', 'Life Purpose Clarity'] }
+];
+
+/** Ayurvedic Tridosha */
+const TRIDOSHA_LABELS: { title: string; rows: string[] }[] = [
+  { title: 'Vata Dosha (Air & Ether)', rows: ['Movement Energy', 'Nervous System', 'Creativity Flow', 'Communication', 'Mental Speed', 'Flexibility', 'Inspiration'] },
+  { title: 'Pitta Dosha (Fire & Water)', rows: ['Metabolic Fire', 'Intellectual Power', 'Leadership Drive', 'Digestion Quality', 'Vision & Focus', 'Transformation', 'Courage Level'] },
+  { title: 'Kapha Dosha (Earth & Water)', rows: ['Physical Endurance', 'Emotional Stability', 'Immune Strength', 'Memory Retention', 'Compassion Level', 'Loyalty', 'Structural Form'] }
+];
+
+/** Antahkarana (4 Mind Faculties) */
+const ANTAHKARANA_LABELS: { title: string; rows: string[] }[] = [
+  { title: 'Manas (Mind)', rows: ['Sensory Processing', 'Reactive Mind', 'Desire Center', 'Emotional Response', 'Memory Access', 'Imagination', 'Dream State'] },
+  { title: 'Buddhi (Intellect)', rows: ['Discernment Power', 'Logical Analysis', 'Wisdom Filter', 'Decision Making', 'Higher Reasoning', 'Intuitive Logic', 'Truth Recognition'] },
+  { title: 'Ahamkara (Ego)', rows: ['Identity Formation', 'Self Concept', 'Role Attachment', 'Pride Level', 'Boundary Setting', 'Personal Will', 'Ego Integration'] },
+  { title: 'Chitta (Memory/Consciousness)', rows: ['Memory Field', 'Subconscious Depth', 'Samskara Imprints', 'Cosmic Recording', 'Deep Awareness', 'Soul Memory', 'Universal Connection'] }
+];
+
+/** 12 Cosmic Master Codes configuration */
+const COSMIC_CODES_CONFIG: { num: number; table: number; title: string; subtitle: string; factors: number[]; color: string; icon: string }[] = [
+  { num: 1, table: 42, title: 'Unlimited Wealth & Material Mastery', subtitle: 'Earth element, Root Chakra, Annamaya Kosha', factors: [0, 1], color: '#f59e0b', icon: '💎' },
+  { num: 2, table: 43, title: 'Professional Greatness & Cosmic Purpose', subtitle: 'Fire element, Solar Plexus, Vijnanamaya Kosha', factors: [2, 3], color: '#ef4444', icon: '🌟' },
+  { num: 3, table: 44, title: 'Supreme Energy & Perfect Health', subtitle: 'Water/Fire elements, Pranamaya Kosha, Vitality', factors: [1, 3], color: '#10b981', icon: '⚡' },
+  { num: 4, table: 45, title: 'Infinite Compassion & Divine Affection', subtitle: 'Heart Chakra, Anandamaya Kosha', factors: [4, 6], color: '#ec4899', icon: '❤️' },
+  { num: 5, table: 46, title: 'Ancestral Power & Bloodline Healing', subtitle: 'Spiritual Lineage, Soul Connections, Crown Chakra', factors: [5, 6], color: '#8b5cf6', icon: '🌳' },
+  { num: 6, table: 47, title: 'Absolute Authority & Sovereign Command', subtitle: 'Solar Plexus, Ahamkara, Fire Element', factors: [2, 4], color: '#f97316', icon: '👑' },
+  { num: 7, table: 48, title: 'Radiant Joy & Eternal Inner Peace', subtitle: 'Anandamaya Kosha, Heart Chakra, Chitta', factors: [4, 5], color: '#fbbf24', icon: '☀️' },
+  { num: 8, table: 49, title: 'Cosmic Consciousness & Divine Union', subtitle: 'Crown Chakra, Shivamaya Kosha, Akasha', factors: [5, 6], color: '#6366f1', icon: '🔮' },
+  { num: 9, table: 50, title: 'Limitless Creativity & Visionary Genius', subtitle: 'Sacral Chakra, Third Eye, Manomaya Kosha', factors: [2, 5], color: '#06b6d4', icon: '🎨' },
+  { num: 10, table: 51, title: 'Fearless Adventure & Discovery', subtitle: 'Air Element, Vihaar, Amritamaya Kosha', factors: [0, 2], color: '#84cc16', icon: '🚀' },
+  { num: 11, table: 52, title: 'Sacred Action & Cosmic Duty', subtitle: 'Aachar Conduct, Heart/Crown Chakra, Dharma', factors: [3, 4], color: '#14b8a6', icon: '⚖️' },
+  { num: 12, table: 53, title: 'Ultimate Liberation & Soul Transcendence', subtitle: 'Amritamaya/Shivamaya Koshas, Atman', factors: [5, 6], color: '#a855f7', icon: '🕊️' }
+];
+
+/** Sheet2 — Spiritual Observances base data */
+const SPIRITUAL_OBSERVANCES_BASE: { id: string; name: string; present: number }[] = [
+  { id: 'parental_respect', name: 'Parental Respect', present: 3.2 },
+  { id: 'family_deity', name: 'Family Deity Devotion', present: 3.7 },
+  { id: 'faith_spirituality', name: 'Faith in Spirituality', present: 3.3 },
+  { id: 'spiritual_practices', name: 'Spiritual Practices', present: 5.2 },
+  { id: 'knowledge_time', name: 'Knowledge of Time', present: 4.9 },
+  { id: 'knowledge_directions', name: 'Knowledge of Directions', present: 4.5 },
+  { id: 'breathing_practices', name: 'Breathing Practices', present: 3.1 }
+];
+
+/** Sheet3 — Vedic alternate terminology */
+const VEDIC_MAPPINGS_BASE: { factorId: string; originalName: string; vedicName: string; description: string }[] = [
+  { factorId: 'genetic_inheritance', originalName: 'Genetic Inheritance', vedicName: 'Genetic Blueprint', description: 'The encoded biological template transmitted across generations' },
+  { factorId: 'constitutional_vitality', originalName: 'Constitutional Vitality', vedicName: 'Health Inheritance', description: 'The pranic vitality and physiological constitution received at birth' },
+  { factorId: 'mental_patterns', originalName: 'Mental Patterns', vedicName: 'Mental Influence', description: 'The subconscious mental architectures and inherited thought patterns' },
+  { factorId: 'intellectual_capacity', originalName: 'Intellectual Capacity', vedicName: 'Intellectual Nurturance', description: 'The cultivated and inherited faculties of higher reasoning and learning' },
+  { factorId: 'emotional_foundation', originalName: 'Emotional Foundation', vedicName: 'Emotional Environment', description: 'The emotional climate and temperamental baseline inherited from lineage' },
+  { factorId: 'spiritual_lineage', originalName: 'Spiritual Lineage', vedicName: 'Spiritual Guidance', description: 'The ancestral spiritual wisdom and dharmic inheritance across lifetimes' },
+  { factorId: 'soul_connections', originalName: 'Soul Connections', vedicName: 'Cosmic Bonds', description: 'The soul-level relational bonds and karmic agreements from past lives' }
+];
+
+/**
+ * Helper: build a QssTableRow with dynamic percentage multipliers
+ */
+function buildRow(
+  id: string,
+  name: string,
+  seedValue: number,
+  currentMultiplierPct: number,
+  targetMultiplierPct: number,
+  sourceFactorId?: string,
+  description?: string
+): QssTableRow {
+  const currentStatus = Number((seedValue * (currentMultiplierPct / 100)).toFixed(3));
+  const targetLevel   = Number((currentStatus * (targetMultiplierPct / 100)).toFixed(3));
+  const gapToGoal     = Number((targetLevel - currentStatus).toFixed(3));
+  return { id, name, currentStatus, targetLevel, gapToGoal, sourceFactorId, description };
+}
+
+/**
+ * Helper: sum totals and build a QssTable with attached guideline metadata
+ */
+function buildTable(
+  tableNumber: number,
+  title: string,
+  tier: 1 | 2 | 3 | 4 | 5 | 6,
+  tierLabel: string,
+  rows: QssTableRow[],
+  guideline?: QssTableGuideline
+): QssTable {
+  const totalCurrent = Number(rows.reduce((a, r) => a + r.currentStatus, 0).toFixed(3));
+  const totalTarget  = Number(rows.reduce((a, r) => a + r.targetLevel,   0).toFixed(3));
+  const totalGap     = Number(rows.reduce((a, r) => a + r.gapToGoal,     0).toFixed(3));
+  return { tableNumber, title, tier, tierLabel, rows, totalCurrentStatus: totalCurrent, totalTargetLevel: totalTarget, totalGapToGoal: totalGap, guideline };
+}
+
+/**
+ * Main QSS cascade engine with Excel guideline-based calibration support.
+ * Derives all 54 tables from the 7 Parental Legacy factor totals.
+ */
+export function calculateQSS(
+  factors: FactorValue[],
+  customConfig?: Partial<QssCalibrationConfig>
+): QssResult {
+  const cfg: QssCalibrationConfig = { ...DEFAULT_QSS_CONFIG, ...customConfig };
+  const totals = factors.map(f => f.totalValue);
+  const tables: QssTable[] = [];
+  const targetMul = cfg.targetMultiplierPct;
+
+  // ── TIER 2: Chakra Levels (Table 2) & Aura Levels (Table 3) ───────────────
+  const chakraGuideline: QssTableGuideline = {
+    currentMinPct: 39.5,
+    currentMaxPct: 44.5,
+    appliedCurrentPct: cfg.chakraPct,
+    targetMinPct: 135.0,
+    targetMaxPct: 140.0,
+    appliedTargetPct: targetMul,
+    source: 'Total of Parental Legacy',
+    guidanceText: 'Current status Values are taken 39.5% to 44.5% of the total of Parental Legacy. Target Level 135% to 140% of Current Status'
+  };
+  const chakraRows: QssTableRow[] = totals.map((t, i) =>
+    buildRow(`chakra_${i}`, CHAKRA_LABELS[i], t, cfg.chakraPct, targetMul, factors[i].factorId));
+  tables.push(buildTable(2, 'Chakra Levels', 2, 'Tier 2: Energy Architecture', chakraRows, chakraGuideline));
+
+  const auraGuideline: QssTableGuideline = {
+    currentMinPct: 33.5,
+    currentMaxPct: 38.5,
+    appliedCurrentPct: cfg.auraPct,
+    targetMinPct: 135.0,
+    targetMaxPct: 140.0,
+    appliedTargetPct: targetMul,
+    source: 'Total of Parental Legacy',
+    guidanceText: 'Current status Values are taken 33.5% to 38.5% of the total of Parental Legacy. Target Level 135% to 140% of Current Status'
+  };
+  const auraRows: QssTableRow[] = totals.map((t, i) =>
+    buildRow(`aura_${i}`, AURA_LABELS[i], t, cfg.auraPct, targetMul, factors[i].factorId));
+  tables.push(buildTable(3, 'Aura Levels', 2, 'Tier 2: Energy Architecture', auraRows, auraGuideline));
+
+  // ── TIER 3: Karmic Tables (4–6) + 7 Elements (7–13) ─────────────────────
+  // Table 4: Positive Karmic Deeds
+  const t4Guideline: QssTableGuideline = {
+    currentMinPct: 28.5,
+    currentMaxPct: 33.5,
+    appliedCurrentPct: cfg.positiveKarmicPct,
+    targetMinPct: 135.0,
+    targetMaxPct: 140.0,
+    appliedTargetPct: targetMul,
+    source: 'Total of Parental Legacy',
+    guidanceText: 'Current status Values are taken 28.5% to 33.5% of the total of Parental Legacy. Target Level 135% to 140% of Current Status'
+  };
+  const t4Rows = KARMIC_ROW_LABELS[0].rows.map((name, i) =>
+    buildRow(`karmic_4_${i}`, name, totals[i], cfg.positiveKarmicPct, targetMul, factors[i].factorId));
+  tables.push(buildTable(4, KARMIC_ROW_LABELS[0].title, 3, 'Tier 3: Karmic & Elements', t4Rows, t4Guideline));
+
+  // Table 5: Karmic Refinement Sectors
+  const t5Guideline: QssTableGuideline = {
+    currentMinPct: 41.5,
+    currentMaxPct: 44.5,
+    appliedCurrentPct: cfg.karmicRefinementPct,
+    targetMinPct: 135.0,
+    targetMaxPct: 140.0,
+    appliedTargetPct: targetMul,
+    source: 'Total of Parental Legacy',
+    guidanceText: 'Current status Values are taken 41.5% to 44.5% of the total of Parental Legacy. Target Level 135% to 140% of Current Status'
+  };
+  const t5Rows = KARMIC_ROW_LABELS[1].rows.map((name, i) =>
+    buildRow(`karmic_5_${i}`, name, totals[i], cfg.karmicRefinementPct, targetMul, factors[i].factorId));
+  tables.push(buildTable(5, KARMIC_ROW_LABELS[1].title, 3, 'Tier 3: Karmic & Elements', t5Rows, t5Guideline));
+
+  // Table 6: Karmic Balancing
+  const t6Guideline: QssTableGuideline = {
+    currentMinPct: 85.5,
+    currentMaxPct: 88.5,
+    appliedCurrentPct: cfg.karmicBalancingPct,
+    targetMinPct: 135.0,
+    targetMaxPct: 140.0,
+    appliedTargetPct: targetMul,
+    source: 'Current Status of Karmic Refinement',
+    guidanceText: 'Current status Values are taken 85.5% to 88.5% of the Current of Karmic Refinement. Target Level 135% to 140% of Current Status'
+  };
+  const t6Rows = KARMIC_ROW_LABELS[2].rows.map((name, i) =>
+    buildRow(`karmic_6_${i}`, name, t5Rows[i].currentStatus, cfg.karmicBalancingPct, targetMul, factors[i].factorId));
+  tables.push(buildTable(6, KARMIC_ROW_LABELS[2].title, 3, 'Tier 3: Karmic & Elements', t6Rows, t6Guideline));
+
+  // Table 7: 7 Great Elements (Pancha Mahabhuta)
+  const elementPcts = [
+    cfg.elementEarthPct,
+    cfg.elementWaterPct,
+    cfg.elementFirePct,
+    cfg.elementAirPct,
+    cfg.elementEtherPct,
+    cfg.elementTimePct,
+    cfg.elementSoulPct
+  ];
+  const t7Guideline: QssTableGuideline = {
+    currentMinPct: 31.5,
+    currentMaxPct: 69.5,
+    appliedCurrentPct: Number(((cfg.elementEarthPct + cfg.elementWaterPct + cfg.elementFirePct + cfg.elementAirPct + cfg.elementEtherPct + cfg.elementTimePct + cfg.elementSoulPct) / 7).toFixed(1)),
+    targetMinPct: 135.0,
+    targetMaxPct: 140.0,
+    appliedTargetPct: targetMul,
+    source: 'Total of Parental Legacy (Elemental Multipliers)',
+    guidanceText: 'Current status Values are calibrated per element (Earth: 55.5-58.5%, Water: 61.5-66.5%, Fire: 59.5-63.5%, Air: 67.5-69.5%, Ether: 33.5-38.5%, Time: 64.5-68.5%, Soul: 31.5-35.5%). Target Level 135% to 140%'
+  };
+  const elementRows: QssTableRow[] = totals.map((t, i) =>
+    buildRow(`element_${i}`, ELEMENT_LABELS[i], t, elementPcts[i], targetMul, factors[i].factorId));
+  tables.push(buildTable(7, '7 Great Elements (Pancha Mahabhuta)', 3, 'Tier 3: Karmic & Elements', elementRows, t7Guideline));
+
+  // Individual element tables (8–13)
+  const elementGuidelines: QssTableGuideline[] = [
+    { currentMinPct: 55.5, currentMaxPct: 58.5, appliedCurrentPct: cfg.elementEarthPct, targetMinPct: 135, targetMaxPct: 140, appliedTargetPct: targetMul, source: 'Parental Legacy Total', guidanceText: 'Current status Values are taken 55.5% to 58.5% of the total of Parental Legacy. Target Level 135% to 140%' },
+    { currentMinPct: 61.5, currentMaxPct: 66.5, appliedCurrentPct: cfg.elementWaterPct, targetMinPct: 135, targetMaxPct: 140, appliedTargetPct: targetMul, source: 'Parental Legacy Total', guidanceText: 'Current status Values are taken 61.5% to 66.5% of the total of Parental Legacy. Target Level 135% to 140%' },
+    { currentMinPct: 59.5, currentMaxPct: 63.5, appliedCurrentPct: cfg.elementFirePct, targetMinPct: 135, targetMaxPct: 140, appliedTargetPct: targetMul, source: 'Parental Legacy Total', guidanceText: 'Current status Values are taken 59.5% to 63.5% of the total of Parental Legacy. Target Level 135% to 140%' },
+    { currentMinPct: 67.5, currentMaxPct: 69.5, appliedCurrentPct: cfg.elementAirPct, targetMinPct: 135, targetMaxPct: 140, appliedTargetPct: targetMul, source: 'Parental Legacy Total', guidanceText: 'Current status Values are taken 67.5% to 69.5% of the total of Parental Legacy. Target Level 135% to 140%' },
+    { currentMinPct: 33.5, currentMaxPct: 38.5, appliedCurrentPct: cfg.elementEtherPct, targetMinPct: 135, targetMaxPct: 140, appliedTargetPct: targetMul, source: 'Parental Legacy Total', guidanceText: 'Current status Values are taken 33.5% to 38.5% of the total of Parental Legacy. Target Level 135% to 140%' },
+    { currentMinPct: 64.5, currentMaxPct: 68.5, appliedCurrentPct: cfg.elementTimePct, targetMinPct: 135, targetMaxPct: 140, appliedTargetPct: targetMul, source: 'Parental Legacy Total', guidanceText: 'Current status Values are taken 64.5% to 68.5% of the total of Parental Legacy. Target Level 135% to 140%' }
+  ];
+
+  for (let e = 0; e < 6; e++) {
+    const rows = totals.map((t, i) =>
+      buildRow(`elem_${e}_${i}`, factors[i].factorName, t, elementPcts[e], targetMul, factors[i].factorId));
+    tables.push(buildTable(8 + e, `${ELEMENT_LABELS[e]} — Factor Analysis`, 3, 'Tier 3: Karmic & Elements', rows, elementGuidelines[e]));
+  }
+
+  // ── TIER 4: Individual Chakra Details (14–20) + 7 Koshas (21–27) ─────────
+  for (let c = 0; c < 7; c++) {
+    const b = DETAILED_CHAKRA_BOUNDS[c];
+    const appliedP = cfg.mode === 'min' ? b.min : (cfg.mode === 'max' ? b.max : Number(((b.min + b.max) / 2).toFixed(2)));
+    const cGuideline: QssTableGuideline = {
+      currentMinPct: b.min,
+      currentMaxPct: b.max,
+      appliedCurrentPct: appliedP,
+      targetMinPct: 135.0,
+      targetMaxPct: 140.0,
+      appliedTargetPct: targetMul,
+      source: 'Total of Parental Legacy',
+      guidanceText: `Current status Values are taken ${b.min}% to ${b.max}% of the total of Parental Legacy. Target Level 135% to 140% of Current Status`
+    };
+    const rows = CHAKRA_SUBFACTOR_LABELS[c].map((name, si) =>
+      buildRow(`chakra_detail_${c}_${si}`, name, totals[c], appliedP, targetMul, factors[c].factorId));
+    tables.push(buildTable(14 + c, `${CHAKRA_LABELS[c]} — Detailed Analysis`, 4, 'Tier 4: Granular Chakra & Kosha', rows, cGuideline));
+  }
+
+  // Koshas (Tables 21–27): Guidance is 65% of respective Chakra Current Status
+  const koshaGuideline: QssTableGuideline = {
+    currentMinPct: 65.0,
+    currentMaxPct: 65.0,
+    appliedCurrentPct: cfg.koshasPct,
+    targetMinPct: 135.0,
+    targetMaxPct: 140.0,
+    appliedTargetPct: targetMul,
+    source: 'Respective Chakra Current Status',
+    guidanceText: 'Current status Values are taken 65% of the Current Status of respective Chakra. Target Level 135% to 140% of Current Status'
+  };
+  const koshaRows: QssTableRow[] = totals.map((t, i) =>
+    buildRow(`kosha_${i}`, KOSHA_LABELS[i], chakraRows[i].currentStatus, cfg.koshasPct, targetMul, factors[i].factorId));
+  tables.push(buildTable(21, '7 Koshas (Sheaths of Existence)', 4, 'Tier 4: Granular Chakra & Kosha', koshaRows, koshaGuideline));
+
+  for (let k = 0; k < 6; k++) {
+    const rows = totals.map((t, i) =>
+      buildRow(`kosha_detail_${k}_${i}`, factors[i].factorName, chakraRows[k].currentStatus, cfg.koshasPct, targetMul, factors[i].factorId));
+    tables.push(buildTable(22 + k, `${KOSHA_LABELS[k]} — Factor Analysis`, 4, 'Tier 4: Granular Chakra & Kosha', rows, koshaGuideline));
+  }
+
+  // ── TIER 5: 4 Pillars (28–31) + Psychological (32–34) + Tridosha (35–37) + Antahkarana (38–41) ─
+  const pillarGuideline: QssTableGuideline = {
+    currentMinPct: 45.5,
+    currentMaxPct: 55.5,
+    appliedCurrentPct: cfg.pillarsPct,
+    targetMinPct: 135.0,
+    targetMaxPct: 140.0,
+    appliedTargetPct: targetMul,
+    source: 'Current Status of Respective Element',
+    guidanceText: 'Current status Values are taken 45.5% to 55.5% Current Status of respective Element. Target Level 135% to 140% of Current Status'
+  };
+
+  PILLAR_LABELS.forEach(({ title, rows: rowNames }, pi) => {
+    const rows = rowNames.map((name, i) =>
+      buildRow(`pillar_${pi}_${i}`, name, elementRows[pi].currentStatus, cfg.pillarsPct, targetMul, factors[i].factorId));
+    tables.push(buildTable(28 + pi, title, 5, 'Tier 5: Lifestyle & Mind', rows, pillarGuideline));
+  });
+
+  PSYCHOLOGICAL_LABELS.forEach(({ title, rows: rowNames }, pi) => {
+    const rows = rowNames.map((name, i) =>
+      buildRow(`psych_${pi}_${i}`, name, elementRows[4 + pi].currentStatus, cfg.pillarsPct, targetMul, factors[i].factorId));
+    tables.push(buildTable(32 + pi, title, 5, 'Tier 5: Lifestyle & Mind', rows, pillarGuideline));
+  });
+
+  const doshaGuideline: QssTableGuideline = {
+    currentMinPct: 68.5,
+    currentMaxPct: 71.0,
+    appliedCurrentPct: cfg.doshasAndAntahkaranaPct,
+    targetMinPct: 135.0,
+    targetMaxPct: 140.0,
+    appliedTargetPct: targetMul,
+    source: 'Current Status of Respective Element',
+    guidanceText: 'Current status Values are taken 68.5% to 71% of Current Status of respective Element. Target Level 135% to 140% of Current Status'
+  };
+
+  TRIDOSHA_LABELS.forEach(({ title, rows: rowNames }, di) => {
+    const rows = rowNames.map((name, i) =>
+      buildRow(`dosha_${di}_${i}`, name, elementRows[di].currentStatus, cfg.doshasAndAntahkaranaPct, targetMul, factors[i].factorId));
+    tables.push(buildTable(35 + di, title, 5, 'Tier 5: Lifestyle & Mind', rows, doshaGuideline));
+  });
+
+  ANTAHKARANA_LABELS.forEach(({ title, rows: rowNames }, ai) => {
+    const rows = rowNames.map((name, i) =>
+      buildRow(`antah_${ai}_${i}`, name, elementRows[3 + ai].currentStatus, cfg.doshasAndAntahkaranaPct, targetMul, factors[i].factorId));
+    tables.push(buildTable(38 + ai, title, 5, 'Tier 5: Lifestyle & Mind', rows, doshaGuideline));
+  });
+
+  // ── TIER 6: 12 Cosmic Codes (42–53) ─────────────────────────────────────
+  const cosmicGuideline: QssTableGuideline = {
+    currentMinPct: 39.5,
+    currentMaxPct: 44.5,
+    appliedCurrentPct: cfg.chakraPct,
+    targetMinPct: 135.0,
+    targetMaxPct: 140.0,
+    appliedTargetPct: targetMul,
+    source: 'Dual Contributing Factor Totals',
+    guidanceText: 'Synthesized master codes averaging contributing life factors. Target Level 135% to 140% of Current Status'
+  };
+
+  const cosmicCodes: CosmicCode[] = COSMIC_CODES_CONFIG.map(cc => {
+    const avgTotal = cc.factors.reduce((s, fi) => s + totals[fi], 0) / cc.factors.length;
+    const current  = Number((avgTotal * (cfg.chakraPct / 100)).toFixed(3));
+    const target   = Number((current * (targetMul / 100)).toFixed(3));
+    const gap      = Number((target - current).toFixed(3));
+    return {
+      codeNumber: cc.num,
+      tableNumber: cc.table,
+      title: cc.title,
+      subtitle: cc.subtitle,
+      currentStatus: current,
+      targetLevel: target,
+      gapToGoal: gap,
+      contributingFactors: cc.factors.map(fi => factors[fi].factorName),
+      color: cc.color,
+      icon: cc.icon
+    };
+  });
+
+  // Tables 42–53: individual cosmic code breakdowns
+  COSMIC_CODES_CONFIG.forEach((cc, ci) => {
+    const rows = cc.factors.flatMap(fi =>
+      totals.map((t, si) =>
+        buildRow(`cosmic_${ci}_${si}`, factors[si].factorName, t, cfg.chakraPct, targetMul, factors[si].factorId))
+    ).slice(0, 7);
+    tables.push(buildTable(cc.table, cc.title, 6, 'Tier 6: 12 Cosmic Master Codes', rows, cosmicGuideline));
+  });
+
+  // Table 54: All Codes Comparison
+  const allCodesRows: QssTableRow[] = cosmicCodes.map(cc =>
+    ({
+      id: `all_codes_${cc.codeNumber}`,
+      name: `Code ${cc.codeNumber}: ${cc.title.split('&')[0].trim()}`,
+      currentStatus: cc.currentStatus,
+      targetLevel: cc.targetLevel,
+      gapToGoal: cc.gapToGoal
+    })
+  );
+  const allCodesComparison = buildTable(54, 'All 12 Codes — Master Comparison', 6, 'Tier 6: 12 Cosmic Master Codes', allCodesRows, cosmicGuideline);
+  tables.push(allCodesComparison);
+
+  // ── Sheet2: Spiritual Observances ─────────────────────────────────────────
+  const spiritualObservances: SpiritualObservance[] = SPIRITUAL_OBSERVANCES_BASE.map(s => ({
+    id: s.id,
+    name: s.name,
+    presentLevel: s.present,
+    requiredLevel: Number((s.present * 0.45).toFixed(3)),
+    minimumLevel:  Number((s.present * 0.25).toFixed(3))
+  }));
+
+  // ── Sheet3: Vedic Mappings ────────────────────────────────────────────────
+  const vedicMappings: VedicMapping[] = VEDIC_MAPPINGS_BASE.map(v => ({ ...v }));
+
+  return { tables, spiritualObservances, vedicMappings, cosmicCodes, allCodesComparison, config: cfg };
 }

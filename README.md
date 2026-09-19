@@ -26,6 +26,7 @@ The application is deployed on **100% AWS Free Tier Infrastructure ($0/month)**:
 | Category | Features & Capabilities |
 |---|---|
 | **Core Calculation** | Deterministic DOB-seeded Mulberry32 PRNG · 7 Life Factors · Millipoint integer balancing guaranteeing grandTotal = 100.000 |
+| **QSS True Scan-R** | Complete 54-table cascade across 6 Tiers · 12 Cosmic Codes · Sheet 2 Spiritual Observances · Sheet 3 Vedic Mappings |
 | **Authentication** | JWT (HS256) · bcrypt 12-round password hashing · Password strength enforcement · Guest → user history claim migration |
 | **Database** | MongoDB via Mongoose · Paginated calculation history · Compound indexes · Soft guest session support |
 | **Visualisations** | Grouped Bar Chart · Donut Split with high-contrast center badge · 7-Axis Radar Profile (Recharts) |
@@ -33,6 +34,35 @@ The application is deployed on **100% AWS Free Tier Infrastructure ($0/month)**:
 | **CSV Export** | RFC 4180 CSV export utility on client and server (`GET /api/v1/history/:id/csv`) |
 | **Dark/Light Theme** | Persistent dark/light mode toggle adapting all card backgrounds, typography, and chart SVG colors |
 | **Resilience** | Offline-first client calculation for instant 0ms preview before backend cloud sync · In-memory MongoDB fallback in dev |
+
+---
+
+## 🔮 QSS True Scan-R Analysis Engine (54 Tables)
+
+Integrated directly into the dashboard under the **"QSS Analysis"** tab, this engine transforms the 7 core Parental Legacy factors into a complete multi-tier spiritual, energetic, and psychological audit following the authoritative Excel workbook:
+
+### Cascade Formulas & Excel Guidelines (Column F)
+All calculations follow the authoritative guidance rules defined in Column F of `QSS TRUE SCAN-R.xlsx`:
+- **Chakras (Table 2):** Current Status $= \text{Seed} \times [39.5\% \text{ to } 44.5\%]$ (Midpoint: $42.0\%$)
+- **Auras (Table 3):** Current Status $= \text{Seed} \times [33.5\% \text{ to } 38.5\%]$ (Midpoint: $36.0\%$)
+- **Positive Karmic Deeds (Table 4):** Current Status $= \text{Seed} \times [28.5\% \text{ to } 33.5\%]$ (Midpoint: $31.0\%$)
+- **Karmic Refinement (Table 5):** Current Status $= \text{Seed} \times [41.5\% \text{ to } 44.5\%]$ (Midpoint: $43.0\%$)
+- **Karmic Balancing (Table 6):** Current Status $= \text{Refinement} \times [85.5\% \text{ to } 88.5\%]$ (Midpoint: $87.0\%$)
+- **Pancha Mahabhuta Elements (Tables 7–13):** Calibrated elemental ranges (Earth: 55.5–58.5%, Water: 61.5–66.5%, Fire: 59.5–63.5%, Air: 67.5–69.5%, Ether: 33.5–38.5%, Time: 64.5–68.5%, Soul: 31.5–35.5%)
+- **Detailed Chakras (Tables 14–20):** Specific individual bounds (Root: 71.5–74.5%, Sacral: 68.5–71%, Solar: 66.5–68%, Heart: 64.5–66%, Throat: 60.5–64%, Third Eye: 38.5–44.5%, Crown: 23.5–28.5%)
+- **Koshas / Sheaths (Tables 21–27):** Current Status $= 65\%$ of respective Chakra
+- **Pillars of Life (Tables 28–34):** Current Status $= [45.5\% \text{ to } 55.5\%]$ of respective Element
+- **Tridosha & Antahkarana (Tables 35–41):** Current Status $= [68.5\% \text{ to } 71.0\%]$ of respective Element
+- **Target Level (All Tables):** $\text{Target Level} = \text{Current Status} \times [135\% \text{ to } 140\%]$ (Default: $137.5\%$)
+- **Gap to Goal:** $\text{Gap} = \text{Target Level} - \text{Current Status}$
+
+### 🎛️ Interactive Calibration & Simulation Controls
+The dashboard includes live ratio calibration controls:
+- ⚡ **Excel Midpoint (Recommended):** Uses guideline midpoint values.
+- 📉 **Minimum Bounds:** Simulates lower boundary values across all tables.
+- 📈 **Maximum Bounds:** Simulates upper boundary thresholds.
+- 🎛️ **Custom Simulation:** Real-time sliders allowing full customization with immediate 0ms reactive calculation.
+- 📋 **Guideline Chips:** Every table card displays its exact Excel guideline range and applied percentage.
 
 ---
 
