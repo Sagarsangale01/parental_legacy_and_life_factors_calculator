@@ -337,6 +337,45 @@ const KOSHA_LABELS: string[] = [
   'Shivamaya Kosha (Consciousness Sheath)'
 ];
 
+/**
+ * Row names for each Kosha Detail table (Tables 22–27), directly from Excel.
+ * Index 0 = Table 22 (Annamaya), 1 = Table 23 (Pranamaya), etc.
+ */
+const KOSHA_SUBFACTOR_LABELS: string[][] = [
+  // Table 22 — Annamaya Kosha (Food Sheath)
+  ['Nutrition', 'Structure', 'Sensation', 'Health', 'Activity', 'Rest', 'Mortality'],
+  // Table 23 — Pranamaya Kosha (Energy Sheath)
+  ['Prana Flow', 'Breath Quality', 'Vital Force', 'Energy Reserves', 'Chi Balance', 'Nadis Health', 'Aura Vitality'],
+  // Table 24 — Manomaya Kosha (Mental Sheath)
+  ['Thought Patterns', 'Emotional Mind', 'Desire Nature', 'Memory Quality', 'Mind Clarity', 'Mental Peace', 'Reaction Speed'],
+  // Table 25 — Vijnanamaya Kosha (Wisdom Sheath)
+  ['Discrimination Power', 'Wisdom Depth', 'Intuitive Knowing', 'Ethical Clarity', 'Spiritual Insight', 'Higher Learning', 'Truth Perception'],
+  // Table 26 — Anandamaya Kosha (Bliss Sheath)
+  ['Inner Joy', 'Contentment', 'Gratitude Level', 'Peace Depth', 'Love Quality', 'Bliss Access', 'Divine Connection'],
+  // Table 27 — Amritamaya Kosha (Immortality Sheath)
+  ['Timeless Awareness', 'Deathless Nature', 'Soul Continuity', 'Astral Travel', 'Past Life Access', 'Rebirth Wisdom', 'Eternal Presence']
+];
+
+/**
+ * Row names for each Element Detail table (Tables 8–13), directly from Excel.
+ * Index 0 = Table 8 (Earth), 1 = Table 9 (Water), 2 = Table 10 (Fire),
+ *         3 = Table 11 (Air),  4 = Table 12 (Ether), 5 = Table 13 (Time)
+ */
+const ELEMENT_SUBFACTOR_LABELS: string[][] = [
+  // Table 8 — Earth (Prithvi)
+  ['Physical Body', 'Bone Structure', 'Material World', 'Stability Factor', 'Grounding Force', 'Earth Connection', 'Manifestation'],
+  // Table 9 — Water (Jala)
+  ['Emotional Fluidity', 'Adaptability', 'Purification', 'Flow State', 'Receptivity', 'Nourishment', 'Healing Waters'],
+  // Table 10 — Fire (Agni)
+  ['Digestive Fire', 'Transformation', 'Radiance', 'Metabolism', 'Courage', 'Purifying Flame', 'Solar Power'],
+  // Table 11 — Air (Vayu)
+  ['Breath & Life Force', 'Movement Energy', 'Communication', 'Mental Speed', 'Flexibility', 'Nervous System', 'Freedom'],
+  // Table 12 — Ether (Akasha)
+  ['Space Awareness', 'Sound Resonance', 'Vibrational Field', 'Expansion', 'Inner Silence', 'Cosmic Reception', 'Subtle Perception'],
+  // Table 13 — Time (Kala)
+  ['Past Integration', 'Present Awareness', 'Future Vision', 'Timing Mastery', 'Karmic Cycles', 'Rhythmic Flow', 'Temporal Wisdom']
+];
+
 /** Individual Chakra sub-factor labels (for Tables 14–20) */
 const CHAKRA_SUBFACTOR_LABELS: string[][] = [
   ['Physical Security', 'Grounding Energy', 'Survival Instinct', 'Earth Connection', 'Material Stability', 'Ancestral Roots', 'Body Vitality'],
@@ -585,8 +624,8 @@ export function calculateQSS(
   ];
 
   for (let e = 0; e < 6; e++) {
-    const rows = totals.map((t, i) =>
-      buildRow(`elem_${e}_${i}`, factors[i].factorName, t, elementPcts[e], targetMul, factors[i].factorId));
+    const rows = ELEMENT_SUBFACTOR_LABELS[e].map((name, i) =>
+      buildRow(`elem_${e}_${i}`, name, totals[Math.min(i, totals.length - 1)], elementPcts[e], targetMul, factors[Math.min(i, factors.length - 1)].factorId));
     tables.push(buildTable(8 + e, `${ELEMENT_LABELS[e]} — Factor Analysis`, 3, 'Tier 3: Karmic & Elements', rows, elementGuidelines[e]));
   }
 
@@ -625,8 +664,8 @@ export function calculateQSS(
   tables.push(buildTable(21, '7 Koshas (Sheaths of Existence)', 4, 'Tier 4: Granular Chakra & Kosha', koshaRows, koshaGuideline));
 
   for (let k = 0; k < 6; k++) {
-    const rows = totals.map((t, i) =>
-      buildRow(`kosha_detail_${k}_${i}`, factors[i].factorName, chakraRows[k].currentStatus, cfg.koshasPct, targetMul, factors[i].factorId));
+    const rows = KOSHA_SUBFACTOR_LABELS[k].map((name, i) =>
+      buildRow(`kosha_detail_${k}_${i}`, name, chakraRows[Math.min(i, chakraRows.length - 1)].currentStatus, cfg.koshasPct, targetMul, factors[Math.min(i, factors.length - 1)].factorId));
     tables.push(buildTable(22 + k, `${KOSHA_LABELS[k]} — Factor Analysis`, 4, 'Tier 4: Granular Chakra & Kosha', rows, koshaGuideline));
   }
 

@@ -323,6 +323,34 @@ const KOSHA_LABELS: string[] = [
   'Annamaya Kosha (Food Sheath)', 'Pranamaya Kosha (Energy Sheath)', 'Manomaya Kosha (Mental Sheath)',
   'Vijnanamaya Kosha (Wisdom Sheath)', 'Anandamaya Kosha (Bliss Sheath)', 'Amritamaya Kosha (Immortality Sheath)', 'Shivamaya Kosha (Consciousness Sheath)'
 ];
+const KOSHA_SUBFACTOR_LABELS: string[][] = [
+  // Table 22 — Annamaya Kosha (Food Sheath)
+  ['Nutrition', 'Structure', 'Sensation', 'Health', 'Activity', 'Rest', 'Mortality'],
+  // Table 23 — Pranamaya Kosha (Energy Sheath)
+  ['Prana Flow', 'Breath Quality', 'Vital Force', 'Energy Reserves', 'Chi Balance', 'Nadis Health', 'Aura Vitality'],
+  // Table 24 — Manomaya Kosha (Mental Sheath)
+  ['Thought Patterns', 'Emotional Mind', 'Desire Nature', 'Memory Quality', 'Mind Clarity', 'Mental Peace', 'Reaction Speed'],
+  // Table 25 — Vijnanamaya Kosha (Wisdom Sheath)
+  ['Discrimination Power', 'Wisdom Depth', 'Intuitive Knowing', 'Ethical Clarity', 'Spiritual Insight', 'Higher Learning', 'Truth Perception'],
+  // Table 26 — Anandamaya Kosha (Bliss Sheath)
+  ['Inner Joy', 'Contentment', 'Gratitude Level', 'Peace Depth', 'Love Quality', 'Bliss Access', 'Divine Connection'],
+  // Table 27 — Amritamaya Kosha (Immortality Sheath)
+  ['Timeless Awareness', 'Deathless Nature', 'Soul Continuity', 'Astral Travel', 'Past Life Access', 'Rebirth Wisdom', 'Eternal Presence']
+];
+const ELEMENT_SUBFACTOR_LABELS: string[][] = [
+  // Table 8 — Earth (Prithvi)
+  ['Physical Body', 'Bone Structure', 'Material World', 'Stability Factor', 'Grounding Force', 'Earth Connection', 'Manifestation'],
+  // Table 9 — Water (Jala)
+  ['Emotional Fluidity', 'Adaptability', 'Purification', 'Flow State', 'Receptivity', 'Nourishment', 'Healing Waters'],
+  // Table 10 — Fire (Agni)
+  ['Digestive Fire', 'Transformation', 'Radiance', 'Metabolism', 'Courage', 'Purifying Flame', 'Solar Power'],
+  // Table 11 — Air (Vayu)
+  ['Breath & Life Force', 'Movement Energy', 'Communication', 'Mental Speed', 'Flexibility', 'Nervous System', 'Freedom'],
+  // Table 12 — Ether (Akasha)
+  ['Space Awareness', 'Sound Resonance', 'Vibrational Field', 'Expansion', 'Inner Silence', 'Cosmic Reception', 'Subtle Perception'],
+  // Table 13 — Time (Kala)
+  ['Past Integration', 'Present Awareness', 'Future Vision', 'Timing Mastery', 'Karmic Cycles', 'Rhythmic Flow', 'Temporal Wisdom']
+];
 const CHAKRA_SUBFACTOR_LABELS: string[][] = [
   ['Physical Security', 'Grounding Energy', 'Survival Instinct', 'Earth Connection', 'Material Stability', 'Ancestral Roots', 'Body Vitality'],
   ['Creative Force', 'Emotional Flow', 'Sexual Energy', 'Pleasure Balance', 'Passion Drive', 'Relational Joy', 'Sensory Harmony'],
@@ -417,7 +445,8 @@ export function calculateQSS(factors: FactorValue[], customConfig?: Partial<QssC
     targetMinPct: 135.0, targetMaxPct: 140.0, appliedTargetPct: targetMul,
     source: 'Total of Parental Legacy', guidanceText: 'Current status Values are taken 39.5% to 44.5% of the total of Parental Legacy. Target Level 135% to 140% of Current Status'
   };
-  tables.push(buildTable(2, 'Chakra Levels', 2, 'Tier 2: Energy Architecture', totals.map((t, i) => buildRow(`chakra_${i}`, CHAKRA_LABELS[i], t, cfg.chakraPct, targetMul, factors[i].factorId)), chakraGuideline));
+  const chakraRows: QssTableRow[] = totals.map((t, i) => buildRow(`chakra_${i}`, CHAKRA_LABELS[i], t, cfg.chakraPct, targetMul, factors[i].factorId));
+  tables.push(buildTable(2, 'Chakra Levels', 2, 'Tier 2: Energy Architecture', chakraRows, chakraGuideline));
 
   const auraGuideline: QssTableGuideline = {
     currentMinPct: 33.5, currentMaxPct: 38.5, appliedCurrentPct: cfg.auraPct,
@@ -466,7 +495,11 @@ export function calculateQSS(factors: FactorValue[], customConfig?: Partial<QssC
     { currentMinPct: 33.5, currentMaxPct: 38.5, appliedCurrentPct: cfg.elementEtherPct, targetMinPct: 135, targetMaxPct: 140, appliedTargetPct: targetMul, source: 'Parental Legacy Total', guidanceText: 'Current status Values are taken 33.5% to 38.5% of the total of Parental Legacy. Target Level 135% to 140%' },
     { currentMinPct: 64.5, currentMaxPct: 68.5, appliedCurrentPct: cfg.elementTimePct, targetMinPct: 135, targetMaxPct: 140, appliedTargetPct: targetMul, source: 'Parental Legacy Total', guidanceText: 'Current status Values are taken 64.5% to 68.5% of the total of Parental Legacy. Target Level 135% to 140%' }
   ];
-  for (let e = 0; e < 6; e++) tables.push(buildTable(8 + e, `${ELEMENT_LABELS[e]} — Factor Analysis`, 3, 'Tier 3: Karmic & Elements', totals.map((t, i) => buildRow(`elem_${e}_${i}`, factors[i].factorName, t, elementPcts[e], targetMul, factors[i].factorId)), elementGuidelines[e]));
+  for (let e = 0; e < 6; e++) {
+    const rows = ELEMENT_SUBFACTOR_LABELS[e].map((name, i) =>
+      buildRow(`elem_${e}_${i}`, name, totals[Math.min(i, totals.length - 1)], elementPcts[e], targetMul, factors[Math.min(i, factors.length - 1)].factorId));
+    tables.push(buildTable(8 + e, `${ELEMENT_LABELS[e]} — Factor Analysis`, 3, 'Tier 3: Karmic & Elements', rows, elementGuidelines[e]));
+  }
 
   // Tier 4: Granular Chakra & Koshas
   for (let c = 0; c < 7; c++) {
@@ -483,9 +516,12 @@ export function calculateQSS(factors: FactorValue[], customConfig?: Partial<QssC
     currentMinPct: 65.0, currentMaxPct: 65.0, appliedCurrentPct: cfg.koshasPct, targetMinPct: 135.0, targetMaxPct: 140.0, appliedTargetPct: targetMul,
     source: 'Respective Chakra Current Status', guidanceText: 'Current status Values are taken 65% of the Current Status of respective Chakra. Target Level 135% to 140% of Current Status'
   };
-  const chakraCurrents = totals.map(t => Number((t * (cfg.chakraPct / 100)).toFixed(3)));
-  tables.push(buildTable(21, '7 Koshas (Sheaths of Existence)', 4, 'Tier 4: Granular Chakra & Kosha', totals.map((t, i) => buildRow(`kosha_${i}`, KOSHA_LABELS[i], chakraCurrents[i], cfg.koshasPct, targetMul, factors[i].factorId)), koshaGuideline));
-  for (let k = 0; k < 6; k++) tables.push(buildTable(22 + k, `${KOSHA_LABELS[k]} — Factor Analysis`, 4, 'Tier 4: Granular Chakra & Kosha', totals.map((t, i) => buildRow(`kosha_detail_${k}_${i}`, factors[i].factorName, chakraCurrents[k], cfg.koshasPct, targetMul, factors[i].factorId)), koshaGuideline));
+  tables.push(buildTable(21, '7 Koshas (Sheaths of Existence)', 4, 'Tier 4: Granular Chakra & Kosha', totals.map((t, i) => buildRow(`kosha_${i}`, KOSHA_LABELS[i], chakraRows[i].currentStatus, cfg.koshasPct, targetMul, factors[i].factorId)), koshaGuideline));
+  for (let k = 0; k < 6; k++) {
+    const rows = KOSHA_SUBFACTOR_LABELS[k].map((name, i) =>
+      buildRow(`kosha_detail_${k}_${i}`, name, chakraRows[Math.min(i, chakraRows.length - 1)].currentStatus, cfg.koshasPct, targetMul, factors[Math.min(i, factors.length - 1)].factorId));
+    tables.push(buildTable(22 + k, `${KOSHA_LABELS[k]} — Factor Analysis`, 4, 'Tier 4: Granular Chakra & Kosha', rows, koshaGuideline));
+  }
 
   // Tier 5: Pillars, Psychological, Tridosha, Antahkarana
   const pillarGuideline: QssTableGuideline = {
